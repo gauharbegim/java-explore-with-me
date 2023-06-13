@@ -16,35 +16,35 @@ import java.time.LocalDateTime;
                 query = "select a.app_name as app, h.uri, count(h.ip) as hits " +
                         "from hits as h " +
                         "join apps a on h.app_id = a.app_id " +
-                        "where (h.timeStamp between :start and :end) " +
-                        "and (h.uri in :uris) " +
+                        "where h.timeStamp between :start and :end " +
+                        "and h.uri in :uris " +
                         "group by h.uri, a.app_name " +
-                        "order by hits desc "
+                        "order by COUNT(h.hit_id) desc "
         ),
         @NamedNativeQuery(name = "GetUniqueIpStat", resultSetMapping = "HitToStat",
                 query = "select a.app_name as app, h.uri, count(distinct h.ip) as hits " +
                         "from hits as h " +
                         "join apps a on h.app_id = a.app_id " +
-                        "where (h.timeStamp between :start and :end) " +
-                        "and (h.uri in :uris) " +
+                        "where h.timeStamp between :start and :end " +
+                        "and h.uri in :uris " +
                         "group by h.uri, a.app_name " +
-                        "order by hits desc "
+                        "order by COUNT(h.hit_id) desc "
         ),
         @NamedNativeQuery(name = "GetNotUniqueIpStatNoUri", resultSetMapping = "HitToStat",
                 query = "select a.app_name as app, h.uri, count(h.ip) as hits " +
                         "from hits as h " +
                         "join apps a on h.app_id = a.app_id " +
-                        "where (h.timeStamp between :start and :end) " +
+                        "where h.timeStamp between :start and :end " +
                         "group by h.uri, a.app_name " +
-                        "order by hits desc "
+                        "order by COUNT(DISTINCT h.hit_id) desc "
         ),
         @NamedNativeQuery(name = "GetUniqueIpStatNoUri", resultSetMapping = "HitToStat",
                 query = "select a.app_name as app, h.uri, count(distinct h.ip) as hits " +
                         "from hits as h " +
                         "join apps a on h.app_id = a.app_id " +
-                        "where (h.timeStamp between :start and :end) " +
+                        "where h.timeStamp between :start and :end " +
                         "group by h.uri, a.app_name " +
-                        "order by hits desc "
+                        "order by COUNT(h.hit_id) desc "
         )
 })
 @SqlResultSetMapping(name = "HitToStat",

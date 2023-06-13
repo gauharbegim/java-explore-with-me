@@ -48,20 +48,16 @@ public class StatServiceImpl implements StatService {
     }
 
     private List<StatDto> get(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
-        if (uris.stream().anyMatch(uri -> uri.equals("/events")) || uris.isEmpty()) {
+        if (uris.isEmpty()) {
             if (unique) {
-                log.info("сформирована статистика запросов по uris ={} для уникальных ip", uris);
                 return hitRepo.getUniqueIpStatNoUri(start, end);
             } else {
-                log.info("сформирована статистика запросов по uris ={} для не уникальных ip", uris);
                 return hitRepo.getNotUniqueIpStatNoUri(start, end);
             }
         } else {
             if (unique) {
-                log.info("сформирована статистика запросов по uris ={} для уникальных ip", uris);
                 return hitRepo.getUniqueIpStat(start, end, uris);
             } else {
-                log.info("сформирована статистика запросов по uris ={} для не уникальных ip", uris);
                 return hitRepo.getNotUniqueIpStat(start, end, uris);
             }
         }
