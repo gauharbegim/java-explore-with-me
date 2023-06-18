@@ -37,22 +37,22 @@ public class RequestEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id", referencedColumnName = "id")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    EventEntity event;
+    private EventEntity event;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "requester_id", referencedColumnName = "id")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    UserEntity requester;
+    private UserEntity requester;
 
     @Column(nullable = false)
-    LocalDateTime created;
+    private LocalDateTime created;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    RequestStatus status;
+    private RequestStatus status;
 }
