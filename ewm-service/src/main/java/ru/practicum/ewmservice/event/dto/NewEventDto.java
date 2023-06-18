@@ -10,9 +10,10 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.ewmservice.constants.SystemConstats;
-import ru.practicum.ewmservice.event.enums.EventStateAction;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -24,30 +25,34 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @ToString
 @Builder
-public class UpdateEventDto {
+public class NewEventDto {
+    @NotBlank
     @Size(min = SystemConstats.MIN_LENGTH_ANNOTATION, max = SystemConstats.MAX_LENGTH_ANNOTATION)
     String annotation;
 
+    @NotNull
     Long category;
 
+    @NotBlank
     @Size(min = SystemConstats.MIN_LENGTH_DESCRIPTION, max = SystemConstats.MAX_LENGTH_DESCRIPTION)
     String description;
 
+    @NotNull
     @JsonFormat(pattern = SystemConstats.DT_FORMAT, shape = JsonFormat.Shape.STRING)
     LocalDateTime eventDate;
 
+    @NotNull
     @Valid
     LocationDto location;
 
-    Boolean paid;
+    Boolean paid = false;
 
     @PositiveOrZero
-    Integer participantLimit;
+    Integer participantLimit = 0;
 
-    Boolean requestModeration;
+    Boolean requestModeration = true;
 
-    EventStateAction stateAction;
-
+    @NotBlank
     @Size(min = SystemConstats.MIN_LENGTH_TITLE, max = SystemConstats.MAX_LENGTH_TITLE)
     String title;
 }

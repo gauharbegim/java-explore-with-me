@@ -1,8 +1,10 @@
 package ru.practicum.ewmservice.event.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.Nullable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -27,6 +29,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/users/{userId}/events")
 @Validated
+@Slf4j
 public class EventPrivateController {
     private final EventService eventService;
     private final RequestService requestService;
@@ -43,7 +46,7 @@ public class EventPrivateController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public EventDto createEventByPrivate(@PathVariable Long userId,
-                                         @Valid @RequestBody EventDto newEventDto) {
+                                         @Valid @RequestBody NewEventDto newEventDto) {
         return eventService.createEventByPrivate(userId, newEventDto);
     }
 
@@ -60,7 +63,8 @@ public class EventPrivateController {
     public EventDto patchEventByPrivate(
             @PathVariable Long userId,
             @PathVariable Long eventId,
-            @Valid @RequestBody UpdateEventDto updateEventUserRequest) {
+            @Nullable @Valid @RequestBody UpdateEventDto updateEventUserRequest) {
+
         return eventService.editEventByPrivate(userId, eventId, updateEventUserRequest);
     }
 

@@ -2,6 +2,7 @@ package ru.practicum.ewmservice.event.service;
 
 import org.springframework.data.domain.Pageable;
 import ru.practicum.ewmservice.event.dto.EventDto;
+import ru.practicum.ewmservice.event.dto.NewEventDto;
 import ru.practicum.ewmservice.event.dto.UpdateEventDto;
 import ru.practicum.ewmservice.event.entity.EventEntity;
 import ru.practicum.ewmservice.event.enums.EventSortType;
@@ -19,7 +20,7 @@ public interface EventService {
 
     List<EventDto> getAllEventsByPrivate(Long userId, Pageable pageable);
 
-    EventDto createEventByPrivate(Long userId, EventDto newEventDto);
+    EventDto createEventByPrivate(Long userId, NewEventDto newEventDto);
 
     EventDto getEventByPrivate(Long userId, Long eventId);
 

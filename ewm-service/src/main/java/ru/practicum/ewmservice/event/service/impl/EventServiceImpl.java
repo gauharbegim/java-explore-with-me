@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewmservice.category.service.CategoryService;
 import ru.practicum.ewmservice.event.dto.EventDto;
 import ru.practicum.ewmservice.event.dto.LocationDto;
+import ru.practicum.ewmservice.event.dto.NewEventDto;
 import ru.practicum.ewmservice.event.dto.UpdateEventDto;
 import ru.practicum.ewmservice.event.entity.EventEntity;
 import ru.practicum.ewmservice.event.entity.LocationEntity;
@@ -172,7 +173,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public EventDto createEventByPrivate(Long userId, EventDto newEventDto) {
+    public EventDto createEventByPrivate(Long userId, NewEventDto newEventDto) {
         checkNewEventDate(newEventDto.getEventDate(), LocalDateTime.now().plusHours(2));
 
         // TODO check

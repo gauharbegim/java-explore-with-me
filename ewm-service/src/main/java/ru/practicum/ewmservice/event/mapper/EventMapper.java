@@ -1,8 +1,10 @@
 package ru.practicum.ewmservice.event.mapper;
 
 import org.springframework.stereotype.Component;
+import ru.practicum.ewmservice.category.entity.CategoryEntity;
 import ru.practicum.ewmservice.category.mapper.CategoryMapper;
 import ru.practicum.ewmservice.event.dto.EventDto;
+import ru.practicum.ewmservice.event.dto.NewEventDto;
 import ru.practicum.ewmservice.event.entity.EventEntity;
 import ru.practicum.ewmservice.user.mapper.UserMapper;
 
@@ -44,6 +46,27 @@ public class EventMapper {
                 .state(dto.getState())
                 .publishedOn(dto.getPublishedOn())
                 .initiator(UserMapper.toUserEntity(dto.getInitiator()))
+                .requestModeration(dto.getRequestModeration())
+                .build();
+    }
+
+    public EventEntity toEventEntity(NewEventDto dto) {
+        return EventEntity.builder()
+                .id(null)
+                .title(dto.getTitle())
+                .annotation(dto.getAnnotation())
+                .category(CategoryEntity.builder()
+                        .id(dto.getCategory())
+                        .build())
+                .description(dto.getDescription())
+                .paid(dto.getPaid())
+                .participantLimit(dto.getParticipantLimit())
+                .eventDate(dto.getEventDate())
+                .location(LocationMapper.toLocationEntity(dto.getLocation()))
+                .createdOn(null)
+                .state(null)
+                .publishedOn(null)
+                .initiator(null)
                 .requestModeration(dto.getRequestModeration())
                 .build();
     }
