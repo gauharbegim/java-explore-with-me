@@ -52,5 +52,5 @@ services:
       - POSTGRES_PASSWORD=root
 
 volumes:
-  statsstat-db:
+  stat-db:
   ewm-db:
