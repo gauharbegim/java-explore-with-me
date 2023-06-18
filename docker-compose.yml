@@ -34,7 +34,7 @@ services:
       - ewm-db
       - stat-service
     environment:
-      - STATS_SERVER_URL=http://stats-server:9090
+      - STATS_SERVER_URL=http://stat-service:9090
       - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
@@ -52,5 +52,5 @@ services:
       - POSTGRES_PASSWORD=root
 
 volumes:
-  stats-db:
+  statsstat-db:
   ewm-db:
