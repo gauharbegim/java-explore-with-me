@@ -22,8 +22,6 @@ import java.util.Map;
 @Slf4j
 public class StatsClientImpl extends BaseClient implements StatsClient {
 
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
     @Autowired
     public StatsClientImpl(@Value("${stats-client.uri}") String uri, RestTemplateBuilder builder) {
         super(
@@ -34,6 +32,8 @@ public class StatsClientImpl extends BaseClient implements StatsClient {
         );
     }
 
+
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
     public void saveHit(HitDto hit) {
