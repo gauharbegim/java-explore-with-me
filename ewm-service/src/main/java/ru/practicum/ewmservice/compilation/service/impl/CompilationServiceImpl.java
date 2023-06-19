@@ -41,7 +41,7 @@ public class CompilationServiceImpl implements CompilationService {
 
         List<EventEntity> events = new ArrayList<>();
 
-        if (newCompilationDto.getEvents()!=null && !newCompilationDto.getEvents().isEmpty()) {
+        if (newCompilationDto.getEvents() != null && !newCompilationDto.getEvents().isEmpty()) {
             events = eventService.getEventsByIds(newCompilationDto.getEvents());
             checkSize(events, newCompilationDto.getEvents());
         }
