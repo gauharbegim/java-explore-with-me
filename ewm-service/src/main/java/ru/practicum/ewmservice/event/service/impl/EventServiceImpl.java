@@ -50,7 +50,6 @@ public class EventServiceImpl implements EventService {
     private final StatsService statsService;
     private final LocationRepository locationRepository;
     private final EventRepository eventRepository;
-    private final EventMapper eventMapper;
 
     @Override
     public List<ResultEventDto> getEventsByAdmin(List<Long> users, List<EventState> states, List<Long> categories,
@@ -178,7 +177,7 @@ public class EventServiceImpl implements EventService {
         UserEntity eventUser = userService.getUserById(userId);
         CategoryEntity eventCategory = categoryService.getCategoryById(newEventDto.getCategory());
         LocationEntity eventLocation = getOrSaveLocation(newEventDto.getLocation());
-        EventEntity newEvent = eventMapper.toEventEntity(newEventDto, eventCategory, eventLocation, eventUser);
+        EventEntity newEvent = EventMapper.toEventEntity(newEventDto, eventCategory, eventLocation, eventUser);
         return toEventDto(eventRepository.save(newEvent));
     }
 
@@ -370,17 +369,18 @@ public class EventServiceImpl implements EventService {
 //        Map<Long, Long> confirmedRequests = statsService.getConfirmedRequests(events);
 
         return events.stream()
-                .map(eventMapper::toEventDto)
+                .map(EventMapper::toEventDto)
                 .collect(Collectors.toList());
     }
 
     private List<ResultEventDto> toEventsFullDto(List<EventEntity> events) {
-//        TODO clean
-//        Map<Long, Long> views = statsService.getViews(events);
-//        Map<Long, Long> confirmedRequests = statsService.getConfirmedRequests(events);
+        Map<Long, Long> views = statsService.getViews(events);
+        Map<Long, Long> confirmedRequests = statsService.getConfirmedRequests(events);
 
         return events.stream()
-                .map(eventMapper::toResultEventDto)
+                .map(event -> EventMapper.toResultEventDto(event,
+                        confirmedRequests.getOrDefault(event.getId(), 0L),
+                        views.getOrDefault(event.getId(), 0L)))
                 .collect(Collectors.toList());
     }
 
