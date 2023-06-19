@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewmservice.exception.NotFoundException;
+import ru.practicum.ewmservice.user.dto.NewUserRequest;
 import ru.practicum.ewmservice.user.dto.UserDto;
 import ru.practicum.ewmservice.user.entity.UserEntity;
 import ru.practicum.ewmservice.user.mapper.UserMapper;
@@ -24,9 +25,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDto create(UserDto newUser) {
-        log.info("Добавление пользователя {}", newUser);
-
+    public UserDto create(NewUserRequest newUser) {
         return UserMapper.toUserDto(userRepository.save(UserMapper.toUserEntity(newUser)));
     }
 

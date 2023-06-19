@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.ewmservice.constants.SystemConstats;
+import ru.practicum.ewmservice.user.dto.NewUserRequest;
 import ru.practicum.ewmservice.user.dto.UserDto;
 import ru.practicum.ewmservice.user.service.UserService;
 
@@ -32,7 +33,7 @@ public class UserAdminController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDto create(@Valid @NotNull @RequestBody UserDto newUserRequest) {
+    public UserDto create(@Valid @NotNull @RequestBody NewUserRequest newUserRequest) {
         return userService.create(newUserRequest);
     }
 
