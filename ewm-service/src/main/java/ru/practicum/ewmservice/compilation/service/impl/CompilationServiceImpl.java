@@ -7,11 +7,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewmservice.compilation.dto.CompilationDto;
 import ru.practicum.ewmservice.compilation.dto.NewCompilationDto;
+import ru.practicum.ewmservice.compilation.dto.UpdateCompilationRequest;
 import ru.practicum.ewmservice.compilation.entity.CompilationEntity;
 import ru.practicum.ewmservice.compilation.mapper.CompilationMapper;
 import ru.practicum.ewmservice.compilation.repository.CompilationRepository;
 import ru.practicum.ewmservice.compilation.service.CompilationService;
-import ru.practicum.ewmservice.event.dto.ResultEventDto;
+import ru.practicum.ewmservice.event.dto.EventFullDto;
 import ru.practicum.ewmservice.event.entity.EventEntity;
 import ru.practicum.ewmservice.event.service.EventService;
 import ru.practicum.ewmservice.exception.NotFoundException;
@@ -50,7 +51,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     @Transactional
-    public CompilationDto edit(Long compId, NewCompilationDto updateCompilationRequest) {
+    public CompilationDto edit(Long compId, UpdateCompilationRequest updateCompilationRequest) {
         log.info("Обновление подборки событий с id {} и новыми параметрами {}", compId, updateCompilationRequest);
 
         CompilationEntity compilation = getCompilationById(compId);
@@ -101,13 +102,13 @@ public class CompilationServiceImpl implements CompilationService {
         Set<EventEntity> uniqueEvents = new HashSet<>();
         compilations.forEach(compilation -> uniqueEvents.addAll(compilation.getEvents()));
 
-        Map<Long, ResultEventDto> eventsShortDto = new HashMap<>();
+        Map<Long, EventFullDto> eventsShortDto = new HashMap<>();
         eventService.toEventsShortDto(new ArrayList<>(uniqueEvents))
                 .forEach(event -> eventsShortDto.put(event.getId(), event));
 
         List<CompilationDto> result = new ArrayList<>();
         compilations.forEach(compilation -> {
-            List<ResultEventDto> compEventsShortDto = new ArrayList<>();
+            List<EventFullDto> compEventsShortDto = new ArrayList<>();
             compilation.getEvents()
                     .forEach(event -> compEventsShortDto.add(eventsShortDto.get(event.getId())));
             result.add(CompilationMapper.toCompilationDto(compilation));

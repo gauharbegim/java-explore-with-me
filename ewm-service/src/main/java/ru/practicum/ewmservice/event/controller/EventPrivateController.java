@@ -35,7 +35,7 @@ public class EventPrivateController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<ResultEventDto> getAllEventsByPrivate(
+    public List<EventFullDto> getAllEventsByPrivate(
             @PathVariable Long userId,
             @RequestParam(required = false, defaultValue = SystemConstats.PAGE_DEFAULT_FROM) @PositiveOrZero Integer from,
             @RequestParam(required = false, defaultValue = SystemConstats.PAGE_DEFAULT_SIZE) @Positive Integer size) {
@@ -44,14 +44,14 @@ public class EventPrivateController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResultEventDto createEventByPrivate(@PathVariable Long userId,
+    public EventFullDto createEventByPrivate(@PathVariable Long userId,
                                                @Valid @RequestBody NewEventDto newEventDto) {
         return eventService.createEventByPrivate(userId, newEventDto);
     }
 
     @GetMapping("/{eventId}")
     @ResponseStatus(HttpStatus.OK)
-    public ResultEventDto getEventByPrivate(
+    public EventFullDto getEventByPrivate(
             @PathVariable Long userId,
             @PathVariable Long eventId) {
         return eventService.getEventByPrivate(userId, eventId);
@@ -59,7 +59,7 @@ public class EventPrivateController {
 
     @PatchMapping("/{eventId}")
     @ResponseStatus(HttpStatus.OK)
-    public ResultEventDto patchEventByPrivate(
+    public EventFullDto patchEventByPrivate(
             @PathVariable Long userId,
             @PathVariable Long eventId,
             @Valid @RequestBody UpdateEventUserRequest updateEventUserRequest) {

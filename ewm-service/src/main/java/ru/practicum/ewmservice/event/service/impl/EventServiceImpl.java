@@ -52,7 +52,7 @@ public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
 
     @Override
-    public List<ResultEventDto> getEventsByAdmin(List<Long> users, List<EventState> states, List<Long> categories,
+    public List<EventFullDto> getEventsByAdmin(List<Long> users, List<EventState> states, List<Long> categories,
                                                  LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
         checkStartIsBeforeEnd(rangeStart, rangeEnd);
 
@@ -103,7 +103,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public ResultEventDto editEventByAdmin(Long eventId, UpdateEventDto updateEventAdminRequest) {
+    public EventFullDto editEventByAdmin(Long eventId, UpdateEventAdminRequest updateEventAdminRequest) {
         checkNewEventDate(updateEventAdminRequest.getEventDate(), LocalDateTime.now().plusHours(1));
 
         EventEntity event = getEventById(eventId);
@@ -170,7 +170,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<ResultEventDto> getAllEventsByPrivate(Long userId, Pageable pageable) {
+    public List<EventFullDto> getAllEventsByPrivate(Long userId, Pageable pageable) {
 
         userService.getUserById(userId);
 
@@ -181,7 +181,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public ResultEventDto createEventByPrivate(Long userId, NewEventDto newEventDto) {
+    public EventFullDto createEventByPrivate(Long userId, NewEventDto newEventDto) {
         checkNewEventDate(newEventDto.getEventDate(), LocalDateTime.now().plusHours(2));
 
         UserEntity eventUser = userService.getUserById(userId);
@@ -192,7 +192,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public ResultEventDto getEventByPrivate(Long userId, Long eventId) {
+    public EventFullDto getEventByPrivate(Long userId, Long eventId) {
         log.info("Вывод события с id {}, созданного пользователем с id {}", eventId, userId);
 
         userService.getUserById(userId);
@@ -204,7 +204,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public ResultEventDto editEventByPrivate(Long userId, Long eventId, UpdateEventUserRequest updateEventUserRequest) {
+    public EventFullDto editEventByPrivate(Long userId, Long eventId, UpdateEventUserRequest updateEventUserRequest) {
         if (updateEventUserRequest == null) {
             throw new ForbiddenException("Error body");
         }
@@ -269,7 +269,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<ResultEventDto> getEventsByPublic(
+    public List<EventFullDto> getEventsByPublic(
             String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd,
             Boolean onlyAvailable, EventSortType sort, Integer from, Integer size, HttpServletRequest request) {
 
@@ -284,7 +284,7 @@ public class EventServiceImpl implements EventService {
         Map<Long, Integer> eventsParticipantLimit = new HashMap<>();
         events.forEach(event -> eventsParticipantLimit.put(event.getId(), event.getParticipantLimit()));
 
-        List<ResultEventDto> eventsShortDto = toEventsShortDto(events);
+        List<EventFullDto> eventsShortDto = toEventsShortDto(events);
 
         if (onlyAvailable) {
             eventsShortDto = eventsShortDto.stream()
@@ -294,9 +294,9 @@ public class EventServiceImpl implements EventService {
         }
 
         if (needSort(sort, EventSortType.VIEWS)) {
-            eventsShortDto.sort(Comparator.comparing(ResultEventDto::getViews));
+            eventsShortDto.sort(Comparator.comparing(EventFullDto::getViews));
         } else if (needSort(sort, EventSortType.EVENT_DATE)) {
-            eventsShortDto.sort(Comparator.comparing(ResultEventDto::getEventDate));
+            eventsShortDto.sort(Comparator.comparing(EventFullDto::getEventDate));
         }
 
         statsService.addHit(request);
@@ -344,7 +344,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public ResultEventDto getEventByPublic(Long eventId, HttpServletRequest request) {
+    public EventFullDto getEventByPublic(Long eventId, HttpServletRequest request) {
         EventEntity event = getEventById(eventId);
 
         if (!event.getState().equals(EventState.PUBLISHED)) {
@@ -372,29 +372,29 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<ResultEventDto> toEventsShortDto(List<EventEntity> events) {
+    public List<EventFullDto> toEventsShortDto(List<EventEntity> events) {
         Map<Long, Long> views = statsService.getViews(events);
         Map<Long, Long> confirmedRequests = statsService.getConfirmedRequests(events);
 
         return events.stream()
-                .map(event -> EventMapper.toResultEventDto(event,
+                .map(event -> EventMapper.toEventFullDto(event,
                         confirmedRequests.getOrDefault(event.getId(), 0L),
                         views.getOrDefault(event.getId(), 0L)))
                 .collect(Collectors.toList());
     }
 
-    private List<ResultEventDto> toResultEventsDto(List<EventEntity> events) {
+    private List<EventFullDto> toResultEventsDto(List<EventEntity> events) {
         Map<Long, Long> views = statsService.getViews(events);
         Map<Long, Long> confirmedRequests = statsService.getConfirmedRequests(events);
 
         return events.stream()
-                .map(event -> EventMapper.toResultEventDto(event,
+                .map(event -> EventMapper.toEventFullDto(event,
                         confirmedRequests.getOrDefault(event.getId(), 0L),
                         views.getOrDefault(event.getId(), 0L)))
                 .collect(Collectors.toList());
     }
 
-    private ResultEventDto toEventDto(EventEntity event) {
+    private EventFullDto toEventDto(EventEntity event) {
         return toResultEventsDto(List.of(event)).get(0);
     }
 

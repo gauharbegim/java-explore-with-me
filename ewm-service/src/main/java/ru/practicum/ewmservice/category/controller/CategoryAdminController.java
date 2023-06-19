@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.ewmservice.category.dto.CategoryDto;
+import ru.practicum.ewmservice.category.dto.NewCategoryDto;
 import ru.practicum.ewmservice.category.service.CategoryService;
 
 import javax.validation.Valid;
@@ -23,7 +24,7 @@ public class CategoryAdminController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoryDto create(@Valid @RequestBody CategoryDto newCategory) {
+    public CategoryDto create(@Valid @RequestBody NewCategoryDto newCategory) {
         return categoryService.create(newCategory);
     }
 

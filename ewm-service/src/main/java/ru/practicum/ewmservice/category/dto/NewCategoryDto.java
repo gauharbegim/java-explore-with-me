@@ -1,4 +1,4 @@
-package ru.practicum.ewmservice.compilation.dto;
+package ru.practicum.ewmservice.category.dto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -6,20 +6,19 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.ewmservice.event.dto.EventShortDto;
 
-import java.util.List;
+import javax.validation.constraints.NotBlank;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @Builder
-public class CompilationDto {
-    Long id;
-    String title;
-    Boolean pinned;
-    List<EventShortDto> events;
+public class NewCategoryDto {
+    @NotBlank
+    String name;
 }

@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewmservice.category.dto.CategoryDto;
+import ru.practicum.ewmservice.category.dto.NewCategoryDto;
 import ru.practicum.ewmservice.category.entity.CategoryEntity;
 import ru.practicum.ewmservice.category.mapper.CategoryMapper;
 import ru.practicum.ewmservice.category.repository.CategoryRepository;
@@ -24,8 +25,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public CategoryDto create(CategoryDto newCategoryDto) {
-        return CategoryMapper.toCategoryDto(categoryRepository.save(CategoryMapper.toCategoryEntity(newCategoryDto)));
+    public CategoryDto create(NewCategoryDto newCategoryDto) {
+        return CategoryMapper.toCategoryDto(categoryRepository.save(CategoryMapper.toNewCategoryDto(newCategoryDto)));
     }
 
     @Override

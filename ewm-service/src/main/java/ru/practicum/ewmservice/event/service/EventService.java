@@ -11,28 +11,28 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface EventService {
-    List<ResultEventDto> getEventsByAdmin(List<Long> users, List<EventState> states, List<Long> categories,
+    List<EventFullDto> getEventsByAdmin(List<Long> users, List<EventState> states, List<Long> categories,
                                           LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size);
 
-    ResultEventDto editEventByAdmin(Long eventId, UpdateEventDto updateEventAdminRequest);
+    EventFullDto editEventByAdmin(Long eventId, UpdateEventAdminRequest updateEventAdminRequest);
 
-    List<ResultEventDto> getAllEventsByPrivate(Long userId, Pageable pageable);
+    List<EventFullDto> getAllEventsByPrivate(Long userId, Pageable pageable);
 
-    ResultEventDto createEventByPrivate(Long userId, NewEventDto newEventDto);
+    EventFullDto createEventByPrivate(Long userId, NewEventDto newEventDto);
 
-    ResultEventDto getEventByPrivate(Long userId, Long eventId);
+    EventFullDto getEventByPrivate(Long userId, Long eventId);
 
-    ResultEventDto editEventByPrivate(Long userId, Long eventId, UpdateEventUserRequest updateEventUserRequest);
+    EventFullDto editEventByPrivate(Long userId, Long eventId, UpdateEventUserRequest updateEventUserRequest);
 
-    List<ResultEventDto> getEventsByPublic(String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart,
+    List<EventFullDto> getEventsByPublic(String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart,
                                      LocalDateTime rangeEnd, Boolean onlyAvailable, EventSortType sort,
                                      Integer from, Integer size, HttpServletRequest request);
 
-    ResultEventDto getEventByPublic(Long id, HttpServletRequest request);
+    EventFullDto getEventByPublic(Long id, HttpServletRequest request);
 
     EventEntity getEventById(Long eventId);
 
     List<EventEntity> getEventsByIds(List<Long> eventsId);
 
-    List<ResultEventDto> toEventsShortDto(List<EventEntity> events);
+    List<EventFullDto> toEventsShortDto(List<EventEntity> events);
 }

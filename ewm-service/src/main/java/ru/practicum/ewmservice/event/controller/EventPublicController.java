@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.ewmservice.constants.SystemConstats;
-import ru.practicum.ewmservice.event.dto.ResultEventDto;
+import ru.practicum.ewmservice.event.dto.EventFullDto;
 import ru.practicum.ewmservice.event.enums.EventSortType;
 import ru.practicum.ewmservice.event.service.EventService;
 
@@ -30,7 +30,7 @@ public class EventPublicController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<ResultEventDto> getEventsByPublic(
+    public List<EventFullDto> getEventsByPublic(
             @RequestParam(required = false) String text,
             @RequestParam(required = false) List<Long> categories,
             @RequestParam(required = false) Boolean paid,
@@ -47,7 +47,7 @@ public class EventPublicController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResultEventDto getEventByPublic(@PathVariable Long id,
+    public EventFullDto getEventByPublic(@PathVariable Long id,
                                            HttpServletRequest request) {
         return eventService.getEventByPublic(id, request);
     }

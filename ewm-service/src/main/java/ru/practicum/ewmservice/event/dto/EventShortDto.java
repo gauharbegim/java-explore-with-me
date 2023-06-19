@@ -10,8 +10,7 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.ewmservice.category.dto.CategoryDto;
 import ru.practicum.ewmservice.constants.SystemConstats;
-import ru.practicum.ewmservice.event.enums.EventState;
-import ru.practicum.ewmservice.user.dto.UserDto;
+import ru.practicum.ewmservice.user.dto.UserShortDto;
 
 import java.time.LocalDateTime;
 
@@ -21,30 +20,17 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ResultEventDto {
+public class EventShortDto {
     String annotation;
     CategoryDto category;
     Long confirmedRequests;
 
     @JsonFormat(pattern = SystemConstats.DT_FORMAT, shape = JsonFormat.Shape.STRING)
-    LocalDateTime createdOn;
-
-    String description;
-
-    @JsonFormat(pattern = SystemConstats.DT_FORMAT, shape = JsonFormat.Shape.STRING)
     LocalDateTime eventDate;
 
     Long id;
-    UserDto initiator;
-    LocationDto location;
+    UserShortDto initiator;
     Boolean paid;
-    Integer participantLimit;
-
-    @JsonFormat(pattern = SystemConstats.DT_FORMAT, shape = JsonFormat.Shape.STRING)
-    LocalDateTime publishedOn;
-
-    Boolean requestModeration;
-    EventState state;
     String title;
     Long views;
 }
