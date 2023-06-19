@@ -42,7 +42,7 @@ public class EventAdminController {
             @RequestParam(required = false) @DateTimeFormat(pattern = SystemConstats.DT_FORMAT) LocalDateTime rangeEnd,
             @RequestParam(required = false, defaultValue = SystemConstats.PAGE_DEFAULT_FROM) @PositiveOrZero Integer from,
             @RequestParam(required = false, defaultValue = SystemConstats.PAGE_DEFAULT_SIZE) @Positive Integer size) {
-        return eventService.getEventsByAdmin(users, states, categories, rangeStart, rangeEnd, from, size);
+            return eventService.getEventsByAdmin(users, states, categories, rangeStart, rangeEnd, from, size);
     }
 
     @PatchMapping("/{eventId}")

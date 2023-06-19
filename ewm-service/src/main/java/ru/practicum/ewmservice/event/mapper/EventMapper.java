@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 
 @Component
 public class EventMapper {
-    public EventDto toEventDto(EventEntity entity) {
+    public static EventDto toEventDto(EventEntity entity) {
         return EventDto.builder()
                 .annotation(entity.getAnnotation())
                 .category(CategoryMapper.toCategoryDto(entity.getCategory()))
@@ -37,11 +37,11 @@ public class EventMapper {
                 .build();
     }
 
-    public ResultEventDto toResultEventDto(EventEntity entity) {
+    public static ResultEventDto toResultEventDto(EventEntity entity, Long confirmedRequests, Long view) {
         return ResultEventDto.builder()
                 .annotation(entity.getAnnotation())
                 .category(CategoryMapper.toCategoryDto(entity.getCategory()))
-//                .confirmedRequests()
+                .confirmedRequests(confirmedRequests)
                 .createdOn(entity.getCreatedOn())
                 .description(entity.getDescription())
                 .eventDate(entity.getEventDate())
@@ -54,7 +54,7 @@ public class EventMapper {
                 .requestModeration(entity.getRequestModeration())
                 .state(entity.getState())
                 .title(entity.getTitle())
-//                .views(entity.getV())
+                .views(view)
                 .build();
     }
 
@@ -77,7 +77,7 @@ public class EventMapper {
                 .build();
     }
 
-    public EventEntity toEventEntity(NewEventDto dto, CategoryEntity category, LocationEntity location,UserEntity initiator) {
+    public static EventEntity toEventEntity(NewEventDto dto, CategoryEntity category, LocationEntity location, UserEntity initiator) {
         return EventEntity.builder()
                 .id(null)
                 .title(dto.getTitle())
