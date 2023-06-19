@@ -25,7 +25,7 @@ import java.util.List;
 public class NewCompilationDto {
     @NotBlank
     @NotNull
-    @Size(min = SystemConstats.MIN_LENGTH_TITLE, max = SystemConstats.MAX_LENGTH_TITLE)
+    @Size(min = SystemConstats.MIN_UPDATECOMPILATIONREQUEST_LENGTH_TITLE, max = SystemConstats.MAX_UPDATECOMPILATIONREQUEST_LENGTH_TITLE)
     String title;
 
     Boolean pinned;

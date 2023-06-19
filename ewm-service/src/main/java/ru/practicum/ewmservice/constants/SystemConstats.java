@@ -15,6 +15,9 @@ public class SystemConstats {
     public static final int MAX_LENGTH_DESCRIPTION = 7000;
     public static final int MIN_LENGTH_TITLE = 3;
     public static final int MAX_LENGTH_TITLE = 120;
+    public static final int MIN_UPDATECOMPILATIONREQUEST_LENGTH_TITLE = 1;
+    public static final int MAX_UPDATECOMPILATIONREQUEST_LENGTH_TITLE = 50;
+
     public static final int MAX_LENGTH_USER_NAME = 250;
     public static final int MIN_LENGTH_USER_NAME = 2;
     public static final int MIN_LENGTH_EMAIL = 6;
