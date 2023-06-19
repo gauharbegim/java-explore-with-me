@@ -54,6 +54,8 @@ public class ErrorHandler {
                 LocalDateTime.now().format(SystemConstats.DT_FORMATTER));
     }
 
+
+
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiError handleNotFoundException(final NotFoundException exception) {
@@ -81,6 +83,16 @@ public class ErrorHandler {
     public ApiError handleForbiddenException(final ForbiddenException exception) {
         log.error(exception.toString());
         return new ApiError(HttpStatus.CONFLICT.name(),
+                "For the requested operation the conditions are not met.",
+                exception.getMessage(),
+                getErrors(exception),
+                LocalDateTime.now().format(SystemConstats.DT_FORMATTER));
+    }
+
+    @ExceptionHandler(InvalidParametrException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleInvalidParametrException(final InvalidParametrException exception) {
+        return new ApiError(HttpStatus.BAD_REQUEST.name(),
                 "For the requested operation the conditions are not met.",
                 exception.getMessage(),
                 getErrors(exception),

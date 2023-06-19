@@ -19,6 +19,7 @@ import ru.practicum.ewmservice.event.repository.LocationRepository;
 import ru.practicum.ewmservice.event.service.EventService;
 import ru.practicum.ewmservice.event.service.StatsService;
 import ru.practicum.ewmservice.exception.ForbiddenException;
+import ru.practicum.ewmservice.exception.InvalidParametrException;
 import ru.practicum.ewmservice.exception.NotFoundException;
 import ru.practicum.ewmservice.user.entity.UserEntity;
 import ru.practicum.ewmservice.user.service.UserService;
@@ -53,7 +54,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<EventFullDto> getEventsByAdmin(List<Long> users, List<EventState> states, List<Long> categories,
-                                                 LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
+                                               LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
         checkStartIsBeforeEnd(rangeStart, rangeEnd);
 
         List<EventEntity> events = getEventsByAdminCriteria(users, states, categories, rangeStart, rangeEnd, from, size);
@@ -422,7 +423,7 @@ public class EventServiceImpl implements EventService {
 
     private void checkNewEventDate(LocalDateTime newEventDate, LocalDateTime minTimeBeforeEventStart) {
         if (newEventDate != null && newEventDate.isBefore(minTimeBeforeEventStart)) {
-            throw new ForbiddenException("Error eventDate");
+            throw new InvalidParametrException("Error eventDate");
         }
     }
 
