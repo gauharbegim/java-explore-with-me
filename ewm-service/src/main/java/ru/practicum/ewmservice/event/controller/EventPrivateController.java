@@ -35,7 +35,7 @@ public class EventPrivateController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<EventDto> getAllEventsByPrivate(
+    public List<ResultEventDto> getAllEventsByPrivate(
             @PathVariable Long userId,
             @RequestParam(required = false, defaultValue = SystemConstats.PAGE_DEFAULT_FROM) @PositiveOrZero Integer from,
             @RequestParam(required = false, defaultValue = SystemConstats.PAGE_DEFAULT_SIZE) @Positive Integer size) {

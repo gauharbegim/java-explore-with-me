@@ -123,13 +123,12 @@ public class EventServiceImpl implements EventService {
             event.setLocation(getOrSaveLocation(updateEventAdminRequest.getLocation()));
         }
 
-//        TODO do
-//        if (updateEventAdminRequest.getParticipantLimit() != null) {
-//            checkIsNewLimitNotLessOld(updateEventAdminRequest.getParticipantLimit(),
-//                    statsService.getConfirmedRequests(List.of(event)).getOrDefault(eventId, 0L));
-//
-//            event.setParticipantLimit(updateEventAdminRequest.getParticipantLimit());
-//        }
+        if (updateEventAdminRequest.getParticipantLimit() != null) {
+            checkIsNewLimitNotLessOld(updateEventAdminRequest.getParticipantLimit(),
+                    statsService.getConfirmedRequests(List.of(event)).getOrDefault(eventId, 0L));
+
+            event.setParticipantLimit(updateEventAdminRequest.getParticipantLimit());
+        }
 
         if (updateEventAdminRequest.getRequestModeration() != null) {
             event.setRequestModeration(updateEventAdminRequest.getRequestModeration());
@@ -160,7 +159,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventDto> getAllEventsByPrivate(Long userId, Pageable pageable) {
+    public List<ResultEventDto> getAllEventsByPrivate(Long userId, Pageable pageable) {
 
         userService.getUserById(userId);
 
@@ -259,7 +258,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventDto> getEventsByPublic(
+    public List<ResultEventDto> getEventsByPublic(
             String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd,
             Boolean onlyAvailable, EventSortType sort, Integer from, Integer size, HttpServletRequest request) {
 
@@ -274,7 +273,7 @@ public class EventServiceImpl implements EventService {
         Map<Long, Integer> eventsParticipantLimit = new HashMap<>();
         events.forEach(event -> eventsParticipantLimit.put(event.getId(), event.getParticipantLimit()));
 
-        List<EventDto> eventsShortDto = toEventsShortDto(events);
+        List<ResultEventDto> eventsShortDto = toEventsShortDto(events);
 
         if (onlyAvailable) {
             eventsShortDto = eventsShortDto.stream()
@@ -284,9 +283,9 @@ public class EventServiceImpl implements EventService {
         }
 
         if (needSort(sort, EventSortType.VIEWS)) {
-            eventsShortDto.sort(Comparator.comparing(EventDto::getViews));
+            eventsShortDto.sort(Comparator.comparing(ResultEventDto::getViews));
         } else if (needSort(sort, EventSortType.EVENT_DATE)) {
-            eventsShortDto.sort(Comparator.comparing(EventDto::getEventDate));
+            eventsShortDto.sort(Comparator.comparing(ResultEventDto::getEventDate));
         }
 
         statsService.addHit(request);
@@ -333,7 +332,6 @@ public class EventServiceImpl implements EventService {
         return entityManager.createQuery(query).setFirstResult(from).setMaxResults(size).getResultList();
     }
 
-
     @Override
     public ResultEventDto getEventByPublic(Long eventId, HttpServletRequest request) {
         EventEntity event = getEventById(eventId);
@@ -363,13 +361,14 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventDto> toEventsShortDto(List<EventEntity> events) {
-//        TODO clean
-//        Map<Long, Long> views = statsService.getViews(events);
-//        Map<Long, Long> confirmedRequests = statsService.getConfirmedRequests(events);
+    public List<ResultEventDto> toEventsShortDto(List<EventEntity> events) {
+        Map<Long, Long> views = statsService.getViews(events);
+        Map<Long, Long> confirmedRequests = statsService.getConfirmedRequests(events);
 
         return events.stream()
-                .map(EventMapper::toEventDto)
+                .map(event -> EventMapper.toResultEventDto(event,
+                        confirmedRequests.getOrDefault(event.getId(), 0L),
+                        views.getOrDefault(event.getId(), 0L)))
                 .collect(Collectors.toList());
     }
 

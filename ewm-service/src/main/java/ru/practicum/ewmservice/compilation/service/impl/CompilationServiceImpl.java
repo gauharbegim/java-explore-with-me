@@ -11,7 +11,7 @@ import ru.practicum.ewmservice.compilation.entity.CompilationEntity;
 import ru.practicum.ewmservice.compilation.mapper.CompilationMapper;
 import ru.practicum.ewmservice.compilation.repository.CompilationRepository;
 import ru.practicum.ewmservice.compilation.service.CompilationService;
-import ru.practicum.ewmservice.event.dto.EventDto;
+import ru.practicum.ewmservice.event.dto.ResultEventDto;
 import ru.practicum.ewmservice.event.entity.EventEntity;
 import ru.practicum.ewmservice.event.service.EventService;
 import ru.practicum.ewmservice.exception.NotFoundException;
@@ -101,13 +101,13 @@ public class CompilationServiceImpl implements CompilationService {
         Set<EventEntity> uniqueEvents = new HashSet<>();
         compilations.forEach(compilation -> uniqueEvents.addAll(compilation.getEvents()));
 
-        Map<Long, EventDto> eventsShortDto = new HashMap<>();
+        Map<Long, ResultEventDto> eventsShortDto = new HashMap<>();
         eventService.toEventsShortDto(new ArrayList<>(uniqueEvents))
                 .forEach(event -> eventsShortDto.put(event.getId(), event));
 
         List<CompilationDto> result = new ArrayList<>();
         compilations.forEach(compilation -> {
-            List<EventDto> compEventsShortDto = new ArrayList<>();
+            List<ResultEventDto> compEventsShortDto = new ArrayList<>();
             compilation.getEvents()
                     .forEach(event -> compEventsShortDto.add(eventsShortDto.get(event.getId())));
             result.add(CompilationMapper.toCompilationDto(compilation));

@@ -31,7 +31,7 @@ public class EventPublicController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<EventDto> getEventsByPublic(
+    public List<ResultEventDto> getEventsByPublic(
             @RequestParam(required = false) String text,
             @RequestParam(required = false) List<Long> categories,
             @RequestParam(required = false) Boolean paid,
