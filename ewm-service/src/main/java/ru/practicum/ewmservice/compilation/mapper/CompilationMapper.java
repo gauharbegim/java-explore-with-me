@@ -5,7 +5,6 @@ import ru.practicum.ewmservice.compilation.dto.NewCompilationDto;
 import ru.practicum.ewmservice.compilation.entity.CompilationEntity;
 import ru.practicum.ewmservice.event.dto.EventShortDto;
 import ru.practicum.ewmservice.event.entity.EventEntity;
-import ru.practicum.ewmservice.event.mapper.EventMapper;
 
 import java.util.List;
 
