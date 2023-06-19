@@ -35,7 +35,9 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     @Transactional
     public CompilationDto create(NewCompilationDto newCompilationDto) {
-        log.info("Создание новой подборки событий с параметрами {}", newCompilationDto);
+        if (newCompilationDto.getPinned() == null) {
+            newCompilationDto.setPinned(false);
+        }
 
         List<EventEntity> events = new ArrayList<>();
 
@@ -44,9 +46,10 @@ public class CompilationServiceImpl implements CompilationService {
             checkSize(events, newCompilationDto.getEvents());
         }
 
-        CompilationEntity compilation = compilationRepository.save(CompilationMapper.toCompilationEntity(newCompilationDto));
+        CompilationEntity newCompilationEntity = CompilationMapper.toCompilationEntity(newCompilationDto, events);
+        CompilationEntity compilation = compilationRepository.save(newCompilationEntity);
 
-        return getById(compilation.getId());
+        return CompilationMapper.toCompilationDto(newCompilationEntity);
     }
 
     @Override

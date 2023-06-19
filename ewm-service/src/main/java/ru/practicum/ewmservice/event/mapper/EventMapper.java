@@ -3,6 +3,7 @@ package ru.practicum.ewmservice.event.mapper;
 import org.springframework.stereotype.Component;
 import ru.practicum.ewmservice.category.entity.CategoryEntity;
 import ru.practicum.ewmservice.category.mapper.CategoryMapper;
+import ru.practicum.ewmservice.event.dto.EventShortDto;
 import ru.practicum.ewmservice.event.dto.NewEventDto;
 import ru.practicum.ewmservice.event.dto.EventFullDto;
 import ru.practicum.ewmservice.event.entity.EventEntity;
@@ -12,6 +13,8 @@ import ru.practicum.ewmservice.user.entity.UserEntity;
 import ru.practicum.ewmservice.user.mapper.UserMapper;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class EventMapper {
@@ -53,5 +56,28 @@ public class EventMapper {
                 .initiator(initiator)
                 .requestModeration(dto.getRequestModeration())
                 .build();
+    }
+
+    public static EventEntity toEventEntity(Long eventId) {
+        return EventEntity.builder()
+                .id(null)
+                .build();
+    }
+
+    public static EventShortDto toEventShortDto(EventEntity entity) {
+        return EventShortDto.builder()
+                .annotation(entity.getAnnotation())
+                .category(CategoryMapper.toCategoryDto(entity.getCategory()))
+                .confirmedRequests(entity.getId())
+                .eventDate(entity.getEventDate())
+                .id(entity.getId())
+                .initiator(UserMapper.toUserShortDto(entity.getInitiator()))
+                .paid(entity.getPaid())
+                .title(entity.getTitle())
+                .build();
+    }
+
+    public static List<EventShortDto> toListEventsFullDto(List<EventEntity> entityList) {
+        return entityList.stream().map(EventMapper::toEventShortDto).collect(Collectors.toList());
     }
 }
