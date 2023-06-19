@@ -12,7 +12,7 @@ import ru.practicum.ewmservice.compilation.entity.CompilationEntity;
 import ru.practicum.ewmservice.compilation.mapper.CompilationMapper;
 import ru.practicum.ewmservice.compilation.repository.CompilationRepository;
 import ru.practicum.ewmservice.compilation.service.CompilationService;
-import ru.practicum.ewmservice.event.dto.EventFullDto;
+import ru.practicum.ewmservice.event.dto.EventShortDto;
 import ru.practicum.ewmservice.event.entity.EventEntity;
 import ru.practicum.ewmservice.event.service.EventService;
 import ru.practicum.ewmservice.exception.NotFoundException;
@@ -35,21 +35,16 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     @Transactional
     public CompilationDto create(NewCompilationDto newCompilationDto) {
-        if (newCompilationDto.getPinned() == null) {
-            newCompilationDto.setPinned(false);
-        }
-
         List<EventEntity> events = new ArrayList<>();
 
-        if (newCompilationDto.getEvents() != null && !newCompilationDto.getEvents().isEmpty()) {
+        if (!newCompilationDto.getEvents().isEmpty()) {
             events = eventService.getEventsByIds(newCompilationDto.getEvents());
             checkSize(events, newCompilationDto.getEvents());
         }
 
-        CompilationEntity newCompilationEntity = CompilationMapper.toCompilationEntity(newCompilationDto, events);
-        CompilationEntity compilation = compilationRepository.save(newCompilationEntity);
+        CompilationEntity compilation = compilationRepository.save(CompilationMapper.toCompilationEntity(newCompilationDto, events));
 
-        return CompilationMapper.toCompilationDto(newCompilationEntity);
+        return getById(compilation.getId());
     }
 
     @Override
@@ -83,8 +78,6 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     @Transactional
     public void deleteById(Long compId) {
-        log.info("Удаление подборки событий с id {}", compId);
-
         getCompilationById(compId);
 
         compilationRepository.deleteById(compId);
@@ -105,16 +98,16 @@ public class CompilationServiceImpl implements CompilationService {
         Set<EventEntity> uniqueEvents = new HashSet<>();
         compilations.forEach(compilation -> uniqueEvents.addAll(compilation.getEvents()));
 
-        Map<Long, EventFullDto> eventsShortDto = new HashMap<>();
+        Map<Long, EventShortDto> eventsShortDto = new HashMap<>();
         eventService.toEventsShortDto(new ArrayList<>(uniqueEvents))
                 .forEach(event -> eventsShortDto.put(event.getId(), event));
 
         List<CompilationDto> result = new ArrayList<>();
         compilations.forEach(compilation -> {
-            List<EventFullDto> compEventsShortDto = new ArrayList<>();
+            List<EventShortDto> compEventsShortDto = new ArrayList<>();
             compilation.getEvents()
                     .forEach(event -> compEventsShortDto.add(eventsShortDto.get(event.getId())));
-            result.add(CompilationMapper.toCompilationDto(compilation));
+            result.add(CompilationMapper.toCompilationDto(compilation, compEventsShortDto));
         });
 
         return result;
@@ -122,14 +115,11 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public CompilationDto getById(Long compId) {
-        log.info("Вывод подборки событий с id {}", compId);
-
         CompilationEntity compilation = getCompilationById(compId);
 
-//        TODO clean
-//        List<EventDto> eventsShortDto = eventService.toEventsShortDto(compilation.getEvents());
+        List<EventShortDto> eventsShortDto = eventService.toEventsShortDto(compilation.getEvents());
 
-        return CompilationMapper.toCompilationDto(compilation);
+        return CompilationMapper.toCompilationDto(compilation, eventsShortDto);
     }
 
     private CompilationEntity getCompilationById(Long compId) {

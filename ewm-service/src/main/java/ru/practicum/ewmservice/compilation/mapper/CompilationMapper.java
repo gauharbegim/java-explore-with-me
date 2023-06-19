@@ -3,6 +3,7 @@ package ru.practicum.ewmservice.compilation.mapper;
 import ru.practicum.ewmservice.compilation.dto.CompilationDto;
 import ru.practicum.ewmservice.compilation.dto.NewCompilationDto;
 import ru.practicum.ewmservice.compilation.entity.CompilationEntity;
+import ru.practicum.ewmservice.event.dto.EventShortDto;
 import ru.practicum.ewmservice.event.entity.EventEntity;
 import ru.practicum.ewmservice.event.mapper.EventMapper;
 
@@ -19,12 +20,12 @@ public class CompilationMapper {
                 .build();
     }
 
-    public static CompilationDto toCompilationDto(CompilationEntity entity) {
+    public static CompilationDto toCompilationDto(CompilationEntity entity, List<EventShortDto> events) {
         return CompilationDto.builder()
                 .id(entity.getId())
                 .title(entity.getTitle())
                 .pinned(entity.getPinned())
-                .events(EventMapper.toListEventsFullDto(entity.getEvents()))
+                .events(events)
                 .build();
     }
 }

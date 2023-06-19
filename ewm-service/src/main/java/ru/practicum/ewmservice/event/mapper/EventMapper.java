@@ -13,8 +13,6 @@ import ru.practicum.ewmservice.user.entity.UserEntity;
 import ru.practicum.ewmservice.user.mapper.UserMapper;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class EventMapper {
@@ -58,26 +56,30 @@ public class EventMapper {
                 .build();
     }
 
-    public static EventEntity toEventEntity(Long eventId) {
-        return EventEntity.builder()
-                .id(null)
-                .build();
-    }
+//    public static EventEntity toEventEntity(Long eventId) {
+//        return EventEntity.builder()
+//                .id(null)
+//                .build();
+//    }
 
-    public static EventShortDto toEventShortDto(EventEntity entity) {
+    public static EventShortDto toEventShortDto(EventEntity entity, Long confirmedRequests, Long view) {
         return EventShortDto.builder()
                 .annotation(entity.getAnnotation())
                 .category(CategoryMapper.toCategoryDto(entity.getCategory()))
-                .confirmedRequests(entity.getId())
+                .confirmedRequests(confirmedRequests)
                 .eventDate(entity.getEventDate())
                 .id(entity.getId())
                 .initiator(UserMapper.toUserShortDto(entity.getInitiator()))
                 .paid(entity.getPaid())
                 .title(entity.getTitle())
+                .views(view)
                 .build();
     }
 
-    public static List<EventShortDto> toListEventsFullDto(List<EventEntity> entityList) {
-        return entityList.stream().map(EventMapper::toEventShortDto).collect(Collectors.toList());
-    }
+//    public static List<EventShortDto> toListEventShortDto(List<EventEntity> entityList) {
+//        return entityList.stream().map(EventMapper::toEventShortDto).collect(Collectors.toList());
+//    }
+//    public static List<EventFullDto> toListEventsFullDto(List<EventEntity> entityList) {
+//        return entityList.stream().map(EventMapper::toEventFullDto).collect(Collectors.toList());
+//    }
 }

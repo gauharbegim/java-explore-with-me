@@ -171,7 +171,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventFullDto> getAllEventsByPrivate(Long userId, Pageable pageable) {
+    public List<EventShortDto> getAllEventsByPrivate(Long userId, Pageable pageable) {
 
         userService.getUserById(userId);
 
@@ -270,7 +270,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventFullDto> getEventsByPublic(
+    public List<EventShortDto> getEventsByPublic(
             String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd,
             Boolean onlyAvailable, EventSortType sort, Integer from, Integer size, HttpServletRequest request) {
 
@@ -285,7 +285,7 @@ public class EventServiceImpl implements EventService {
         Map<Long, Integer> eventsParticipantLimit = new HashMap<>();
         events.forEach(event -> eventsParticipantLimit.put(event.getId(), event.getParticipantLimit()));
 
-        List<EventFullDto> eventsShortDto = toEventsShortDto(events);
+        List<EventShortDto> eventsShortDto = toEventsShortDto(events);
 
         if (onlyAvailable) {
             eventsShortDto = eventsShortDto.stream()
@@ -295,9 +295,9 @@ public class EventServiceImpl implements EventService {
         }
 
         if (needSort(sort, EventSortType.VIEWS)) {
-            eventsShortDto.sort(Comparator.comparing(EventFullDto::getViews));
+            eventsShortDto.sort(Comparator.comparing(EventShortDto::getViews));
         } else if (needSort(sort, EventSortType.EVENT_DATE)) {
-            eventsShortDto.sort(Comparator.comparing(EventFullDto::getEventDate));
+            eventsShortDto.sort(Comparator.comparing(EventShortDto::getEventDate));
         }
 
         statsService.addHit(request);
@@ -373,12 +373,13 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventFullDto> toEventsShortDto(List<EventEntity> events) {
+    public List<EventShortDto> toEventsShortDto(List<EventEntity> events) {
         Map<Long, Long> views = statsService.getViews(events);
         Map<Long, Long> confirmedRequests = statsService.getConfirmedRequests(events);
 
         return events.stream()
-                .map(event -> EventMapper.toEventFullDto(event,
+                .map((event) -> EventMapper.toEventShortDto(
+                        event,
                         confirmedRequests.getOrDefault(event.getId(), 0L),
                         views.getOrDefault(event.getId(), 0L)))
                 .collect(Collectors.toList());
