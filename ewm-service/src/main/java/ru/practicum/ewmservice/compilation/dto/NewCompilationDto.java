@@ -11,6 +11,7 @@ import lombok.experimental.FieldDefaults;
 import ru.practicum.ewmservice.constants.SystemConstats;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import java.util.List;
 @Builder
 public class NewCompilationDto {
     @NotBlank
+    @NotNull
     @Size(min = SystemConstats.MIN_LENGTH_TITLE, max = SystemConstats.MAX_LENGTH_TITLE)
     String title;
 
