@@ -10,6 +10,8 @@ public class SystemConstats {
     public static final int MIN_LENGTH_ANNOTATION = 20;
     public static final int MAX_LENGTH_ANNOTATION = 2000;
     public static final int MIN_LENGTH_DESCRIPTION = 20;
+    public static final int MIN_LENGTH_CATEGORY_NAME = 1;
+    public static final int MAX_LENGTH_CATEGORY_NAME = 50;
     public static final int MAX_LENGTH_DESCRIPTION = 7000;
     public static final int MIN_LENGTH_TITLE = 3;
     public static final int MAX_LENGTH_TITLE = 120;

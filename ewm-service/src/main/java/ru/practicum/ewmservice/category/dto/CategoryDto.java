@@ -7,8 +7,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import ru.practicum.ewmservice.constants.SystemConstats;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.Objects;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -21,6 +23,7 @@ public class CategoryDto {
     Long id;
 
     @NotBlank
+    @Size(min = SystemConstats.MIN_LENGTH_CATEGORY_NAME, max = SystemConstats.MAX_LENGTH_CATEGORY_NAME)
     String name;
 
     @Override

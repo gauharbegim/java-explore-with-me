@@ -45,7 +45,7 @@ public class EventPrivateController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public EventFullDto createEventByPrivate(@PathVariable Long userId,
-                                               @Valid @RequestBody NewEventDto newEventDto) {
+                                             @Valid @RequestBody NewEventDto newEventDto) {
         return eventService.createEventByPrivate(userId, newEventDto);
     }
 
@@ -63,9 +63,6 @@ public class EventPrivateController {
             @PathVariable Long userId,
             @PathVariable Long eventId,
             @Valid @RequestBody UpdateEventUserRequest updateEventUserRequest) {
-        log.info("******************************");
-        log.info("eventId: " + eventId);
-        log.info("updateEventUserRequest:{}", updateEventUserRequest);
         return eventService.editEventByPrivate(userId, eventId, updateEventUserRequest);
     }
 
