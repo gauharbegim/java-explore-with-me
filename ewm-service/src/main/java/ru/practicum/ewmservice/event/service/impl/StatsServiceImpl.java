@@ -54,6 +54,9 @@ public class StatsServiceImpl implements StatsService {
         ResponseEntity<Object> response = statsClient.getStat(start, end, uris, unique);
 
         try {
+            log.info("-------------------------");
+            log.info("body:" + response.getBody().toString());
+            log.info("-------------------------");
             return Arrays.asList(mapper.readValue(mapper.writeValueAsString(response.getBody()), StatDto[].class));
         } catch (IOException exception) {
             throw new ClassCastException(exception.getMessage());
@@ -86,7 +89,7 @@ public class StatsServiceImpl implements StatsService {
                     .map(id -> ("/events/" + id))
                     .collect(Collectors.toList());
 
-            List<StatDto> stats = getStats(start, end, uris, null);
+            List<StatDto> stats = getStats(start, end, uris, false);
             stats.forEach(stat -> {
                 Long eventId = Long.parseLong(stat.getUri()
                         .split("/", 0)[2]);

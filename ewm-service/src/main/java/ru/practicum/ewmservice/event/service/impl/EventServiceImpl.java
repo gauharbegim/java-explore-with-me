@@ -58,33 +58,42 @@ public class EventServiceImpl implements EventService {
 
         List<EventEntity> events = getEventsByAdminCriteria(users, states, categories, rangeStart, rangeEnd, from, size);
 
-        return toEventsFullDto(events);
+        return toResultEventsDto(events);
     }
 
     public List<EventEntity> getEventsByAdminCriteria(List<Long> users, List<EventState> states, List<Long> categories,
                                                       LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
+        log.info("users:" + users);
+        log.info("states:" + states);
+        log.info("categories:" + categories);
+        log.info("rangeEnd:" + rangeEnd);
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<EventEntity> query = builder.createQuery(EventEntity.class);
         Root<EventEntity> root = query.from(EventEntity.class);
         Predicate criteria = builder.conjunction();
 
         if (users != null && !users.isEmpty()) {
+            log.info("***1");
             criteria = builder.and(criteria, root.get("initiator").in(users));
         }
 
         if (states != null && !states.isEmpty()) {
+            log.info("***2");
             criteria = builder.and(criteria, root.get("state").in(states));
         }
 
         if (categories != null && !categories.isEmpty()) {
+            log.info("***3");
             criteria = builder.and(criteria, root.get("category").in(categories));
         }
 
         if (rangeStart != null) {
+            log.info("***4");
             criteria = builder.and(criteria, builder.greaterThanOrEqualTo(root.get("eventDate"), rangeStart));
         }
 
         if (rangeEnd != null) {
+            log.info("***5");
             criteria = builder.and(criteria, builder.lessThanOrEqualTo(root.get("eventDate"), rangeEnd));
         }
 
@@ -155,7 +164,9 @@ public class EventServiceImpl implements EventService {
             event.setTitle(updateEventAdminRequest.getTitle());
         }
 
-        return toEventDto(eventRepository.save(event));
+        EventEntity eventEntity = eventRepository.save(event);
+        log.info("---- eventEntity: " + eventEntity);
+        return toEventDto(eventEntity);
     }
 
     @Override
@@ -372,7 +383,7 @@ public class EventServiceImpl implements EventService {
                 .collect(Collectors.toList());
     }
 
-    private List<ResultEventDto> toEventsFullDto(List<EventEntity> events) {
+    private List<ResultEventDto> toResultEventsDto(List<EventEntity> events) {
         Map<Long, Long> views = statsService.getViews(events);
         Map<Long, Long> confirmedRequests = statsService.getConfirmedRequests(events);
 
@@ -384,7 +395,7 @@ public class EventServiceImpl implements EventService {
     }
 
     private ResultEventDto toEventDto(EventEntity event) {
-        return toEventsFullDto(List.of(event)).get(0);
+        return toResultEventsDto(List.of(event)).get(0);
     }
 
     private EventEntity getEventByIdAndInitiatorId(Long eventId, Long userId) {

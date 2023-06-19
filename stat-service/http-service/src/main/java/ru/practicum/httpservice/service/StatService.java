@@ -11,5 +11,4 @@ public interface StatService {
     HitOutputDto saveHit(HitDto dto);
 
     List<StatDto> getStat(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique);
-
 }
