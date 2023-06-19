@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.lang.Nullable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -45,14 +44,14 @@ public class EventPrivateController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public EventDto createEventByPrivate(@PathVariable Long userId,
-                                         @Valid @RequestBody NewEventDto newEventDto) {
+    public ResultEventDto createEventByPrivate(@PathVariable Long userId,
+                                               @Valid @RequestBody NewEventDto newEventDto) {
         return eventService.createEventByPrivate(userId, newEventDto);
     }
 
     @GetMapping("/{eventId}")
     @ResponseStatus(HttpStatus.OK)
-    public EventDto getEventByPrivate(
+    public ResultEventDto getEventByPrivate(
             @PathVariable Long userId,
             @PathVariable Long eventId) {
         return eventService.getEventByPrivate(userId, eventId);
@@ -60,11 +59,13 @@ public class EventPrivateController {
 
     @PatchMapping("/{eventId}")
     @ResponseStatus(HttpStatus.OK)
-    public EventDto patchEventByPrivate(
+    public ResultEventDto patchEventByPrivate(
             @PathVariable Long userId,
             @PathVariable Long eventId,
-            @Nullable @Valid @RequestBody UpdateEventDto updateEventUserRequest) {
-
+            @Valid @RequestBody UpdateEventUserRequest updateEventUserRequest) {
+        log.info("******************************");
+        log.info("eventId: " + eventId);
+        log.info("updateEventUserRequest:{}", updateEventUserRequest);
         return eventService.editEventByPrivate(userId, eventId, updateEventUserRequest);
     }
 

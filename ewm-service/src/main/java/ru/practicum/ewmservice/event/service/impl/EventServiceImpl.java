@@ -5,11 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.ewmservice.category.entity.CategoryEntity;
 import ru.practicum.ewmservice.category.service.CategoryService;
-import ru.practicum.ewmservice.event.dto.EventDto;
-import ru.practicum.ewmservice.event.dto.LocationDto;
-import ru.practicum.ewmservice.event.dto.NewEventDto;
-import ru.practicum.ewmservice.event.dto.UpdateEventDto;
+import ru.practicum.ewmservice.event.dto.*;
 import ru.practicum.ewmservice.event.entity.EventEntity;
 import ru.practicum.ewmservice.event.entity.LocationEntity;
 import ru.practicum.ewmservice.event.enums.EventSortType;
@@ -22,6 +20,7 @@ import ru.practicum.ewmservice.event.service.EventService;
 import ru.practicum.ewmservice.event.service.StatsService;
 import ru.practicum.ewmservice.exception.ForbiddenException;
 import ru.practicum.ewmservice.exception.NotFoundException;
+import ru.practicum.ewmservice.user.entity.UserEntity;
 import ru.practicum.ewmservice.user.service.UserService;
 
 import javax.persistence.EntityManager;
@@ -54,8 +53,8 @@ public class EventServiceImpl implements EventService {
     private final EventMapper eventMapper;
 
     @Override
-    public List<EventDto> getEventsByAdmin(List<Long> users, List<EventState> states, List<Long> categories,
-                                           LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
+    public List<ResultEventDto> getEventsByAdmin(List<Long> users, List<EventState> states, List<Long> categories,
+                                                 LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
         checkStartIsBeforeEnd(rangeStart, rangeEnd);
 
         List<EventEntity> events = getEventsByAdminCriteria(users, states, categories, rangeStart, rangeEnd, from, size);
@@ -96,7 +95,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public EventDto editEventByAdmin(Long eventId, UpdateEventDto updateEventAdminRequest) {
+    public ResultEventDto editEventByAdmin(Long eventId, UpdateEventDto updateEventAdminRequest) {
         checkNewEventDate(updateEventAdminRequest.getEventDate(), LocalDateTime.now().plusHours(1));
 
         EventEntity event = getEventById(eventId);
@@ -173,20 +172,18 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public EventDto createEventByPrivate(Long userId, NewEventDto newEventDto) {
+    public ResultEventDto createEventByPrivate(Long userId, NewEventDto newEventDto) {
         checkNewEventDate(newEventDto.getEventDate(), LocalDateTime.now().plusHours(2));
 
-        // TODO check
-//        UserEntity eventUser = userService.getUserById(userId);
-//        CategoryEntity eventCategory = categoryService.getCategoryById(newEventDto.getCategory());
-//        LocationEntity eventLocation = getOrSaveLocation(newEventDto.getLocation());
-//        EventEntity newEvent = eventMapper.toEventEntity(newEventDto, eventUser, eventCategory, eventLocation, LocalDateTime.now(),EventState.PENDING);
-        EventEntity newEvent = eventMapper.toEventEntity(newEventDto);
+        UserEntity eventUser = userService.getUserById(userId);
+        CategoryEntity eventCategory = categoryService.getCategoryById(newEventDto.getCategory());
+        LocationEntity eventLocation = getOrSaveLocation(newEventDto.getLocation());
+        EventEntity newEvent = eventMapper.toEventEntity(newEventDto, eventCategory, eventLocation, eventUser);
         return toEventDto(eventRepository.save(newEvent));
     }
 
     @Override
-    public EventDto getEventByPrivate(Long userId, Long eventId) {
+    public ResultEventDto getEventByPrivate(Long userId, Long eventId) {
         log.info("Вывод события с id {}, созданного пользователем с id {}", eventId, userId);
 
         userService.getUserById(userId);
@@ -198,7 +195,10 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public EventDto editEventByPrivate(Long userId, Long eventId, UpdateEventDto updateEventUserRequest) {
+    public ResultEventDto editEventByPrivate(Long userId, Long eventId, UpdateEventUserRequest updateEventUserRequest) {
+        if (updateEventUserRequest == null) {
+            throw new ForbiddenException("Error body");
+        }
         checkNewEventDate(updateEventUserRequest.getEventDate(), LocalDateTime.now().plusHours(2));
 
         userService.getUserById(userId);
@@ -336,7 +336,7 @@ public class EventServiceImpl implements EventService {
 
 
     @Override
-    public EventDto getEventByPublic(Long eventId, HttpServletRequest request) {
+    public ResultEventDto getEventByPublic(Long eventId, HttpServletRequest request) {
         EventEntity event = getEventById(eventId);
 
         if (!event.getState().equals(EventState.PUBLISHED)) {
@@ -374,17 +374,17 @@ public class EventServiceImpl implements EventService {
                 .collect(Collectors.toList());
     }
 
-    private List<EventDto> toEventsFullDto(List<EventEntity> events) {
+    private List<ResultEventDto> toEventsFullDto(List<EventEntity> events) {
 //        TODO clean
 //        Map<Long, Long> views = statsService.getViews(events);
 //        Map<Long, Long> confirmedRequests = statsService.getConfirmedRequests(events);
 
         return events.stream()
-                .map(eventMapper::toEventDto)
+                .map(eventMapper::toResultEventDto)
                 .collect(Collectors.toList());
     }
 
-    private EventDto toEventDto(EventEntity event) {
+    private ResultEventDto toEventDto(EventEntity event) {
         return toEventsFullDto(List.of(event)).get(0);
     }
 
@@ -412,8 +412,7 @@ public class EventServiceImpl implements EventService {
 
     private void checkNewEventDate(LocalDateTime newEventDate, LocalDateTime minTimeBeforeEventStart) {
         if (newEventDate != null && newEventDate.isBefore(minTimeBeforeEventStart)) {
-            throw new ForbiddenException(String.format("Field: eventDate. Error: остается слишком мало времени для " +
-                    "подготовки. Value: %s", newEventDate));
+            throw new ForbiddenException("Error eventDate");
         }
     }
 

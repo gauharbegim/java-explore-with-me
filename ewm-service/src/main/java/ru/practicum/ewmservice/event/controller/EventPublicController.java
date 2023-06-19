@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.ewmservice.constants.SystemConstats;
 import ru.practicum.ewmservice.event.dto.EventDto;
+import ru.practicum.ewmservice.event.dto.ResultEventDto;
 import ru.practicum.ewmservice.event.enums.EventSortType;
 import ru.practicum.ewmservice.event.service.EventService;
 
@@ -47,8 +48,8 @@ public class EventPublicController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public EventDto getEventByPublic(@PathVariable Long id,
-                                     HttpServletRequest request) {
+    public ResultEventDto getEventByPublic(@PathVariable Long id,
+                                           HttpServletRequest request) {
         return eventService.getEventByPublic(id, request);
     }
 }

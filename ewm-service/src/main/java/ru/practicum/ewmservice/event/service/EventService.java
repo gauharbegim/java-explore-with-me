@@ -1,9 +1,7 @@
 package ru.practicum.ewmservice.event.service;
 
 import org.springframework.data.domain.Pageable;
-import ru.practicum.ewmservice.event.dto.EventDto;
-import ru.practicum.ewmservice.event.dto.NewEventDto;
-import ru.practicum.ewmservice.event.dto.UpdateEventDto;
+import ru.practicum.ewmservice.event.dto.*;
 import ru.practicum.ewmservice.event.entity.EventEntity;
 import ru.practicum.ewmservice.event.enums.EventSortType;
 import ru.practicum.ewmservice.event.enums.EventState;
@@ -13,24 +11,24 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface EventService {
-    List<EventDto> getEventsByAdmin(List<Long> users, List<EventState> states, List<Long> categories,
+    List<ResultEventDto> getEventsByAdmin(List<Long> users, List<EventState> states, List<Long> categories,
                                     LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size);
 
-    EventDto editEventByAdmin(Long eventId, UpdateEventDto updateEventAdminRequest);
+    ResultEventDto editEventByAdmin(Long eventId, UpdateEventDto updateEventAdminRequest);
 
     List<EventDto> getAllEventsByPrivate(Long userId, Pageable pageable);
 
-    EventDto createEventByPrivate(Long userId, NewEventDto newEventDto);
+    ResultEventDto createEventByPrivate(Long userId, NewEventDto newEventDto);
 
-    EventDto getEventByPrivate(Long userId, Long eventId);
+    ResultEventDto getEventByPrivate(Long userId, Long eventId);
 
-    EventDto editEventByPrivate(Long userId, Long eventId, UpdateEventDto updateEventUserRequest);
+    ResultEventDto editEventByPrivate(Long userId, Long eventId, UpdateEventUserRequest updateEventUserRequest);
 
     List<EventDto> getEventsByPublic(String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart,
                                           LocalDateTime rangeEnd, Boolean onlyAvailable, EventSortType sort,
                                           Integer from, Integer size, HttpServletRequest request);
 
-    EventDto getEventByPublic(Long id, HttpServletRequest request);
+    ResultEventDto getEventByPublic(Long id, HttpServletRequest request);
 
     EventEntity getEventById(Long eventId);
 
