@@ -99,8 +99,9 @@ public class RequestServiceImpl implements RequestService {
         checkUserIsOwner(request.getRequester().getId(), userId);
 
         request.setStatus(RequestStatus.CANCELED);
-
-        return RequestMapper.toParticipationRequestDto(requestRepository.save(request));
+        RequestEntity requestEntity = requestRepository.save(request);
+        log.info("requestEntity: " + requestEntity);
+        return RequestMapper.toParticipationRequestDto(requestEntity);
     }
 
     @Override

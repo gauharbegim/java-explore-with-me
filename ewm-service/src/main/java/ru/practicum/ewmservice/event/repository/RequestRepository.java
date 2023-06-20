@@ -3,7 +3,7 @@ package ru.practicum.ewmservice.event.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import ru.practicum.ewmservice.event.dto.RequestDto;
+import ru.practicum.ewmservice.event.dto.RequestStats;
 import ru.practicum.ewmservice.event.entity.RequestEntity;
 import ru.practicum.ewmservice.event.enums.RequestStatus;
 
@@ -22,15 +22,10 @@ public interface RequestRepository extends JpaRepository<RequestEntity, Long> {
 
     List<RequestEntity> findAllByIdIn(List<Long> requestIds);
 
-    //    @Query("SELECT new ru.practicum.ewmservice.event.dto.RequestDto(r.event.id, count(r.id)) " +
-//            "FROM requests AS r " +
-//            "WHERE r.event.id IN ?1 " +
-//            "AND r.status = 'CONFIRMED' " +
-//            "GROUP BY r.event.id")
-    @Query("SELECT new ru.practicum.ewmservice.event.dto.RequestDto(r.event.id, count(r.id)) " +
+    @Query("SELECT new ru.practicum.ewmservice.event.dto.RequestStats(r.event.id, count(r.id)) " +
             "FROM RequestEntity AS r " +
             "WHERE r.event.id IN ?1 " +
             "AND r.status = 'CONFIRMED' " +
             "GROUP BY r.event.id")
-    List<RequestDto> getConfirmedRequests(List<Long> eventsId);
+    List<RequestStats> getConfirmedRequests(List<Long> eventsId);
 }

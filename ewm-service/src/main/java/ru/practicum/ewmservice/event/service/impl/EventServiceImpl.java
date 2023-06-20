@@ -390,7 +390,8 @@ public class EventServiceImpl implements EventService {
         Map<Long, Long> confirmedRequests = statsService.getConfirmedRequests(events);
 
         return events.stream()
-                .map(event -> EventMapper.toEventFullDto(event,
+                .map((event) -> EventMapper.toEventFullDto(
+                        event,
                         confirmedRequests.getOrDefault(event.getId(), 0L),
                         views.getOrDefault(event.getId(), 0L)))
                 .collect(Collectors.toList());
