@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.dto.HitDto;
 import ru.practicum.dto.StatDto;
 import ru.practicum.ewmservice.constants.SystemConstats;
 import ru.practicum.ewmservice.event.entity.EventEntity;
@@ -40,18 +39,17 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public void addHit(HttpServletRequest request) {
-        HitDto hitDto = HitDto.builder()
-                .app(appName)
-                .ip(request.getRemoteAddr())
-                .timeStamp(LocalDateTime.parse(LocalDateTime.now().format(SystemConstats.DT_FORMATTER), SystemConstats.DT_FORMATTER))
-                .uri(request.getRequestURI())
-                .build();
-        statsClient.saveHit(hitDto);
+        statsClient.saveHit(appName,
+                request.getRequestURI(),
+                request.getRemoteAddr(),
+                LocalDateTime.parse(LocalDateTime.now().format(SystemConstats.DT_FORMATTER), SystemConstats.DT_FORMATTER)
+        );
     }
 
     @Override
     public List<StatDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
-        ResponseEntity<Object> response = statsClient.getStat(start, end, uris, unique);
+        log.info("---> uri: "+uris);
+        ResponseEntity<Object> response = statsClient.getStat(start, end, uris);
 
         try {
             log.info("-------------------------");
@@ -59,6 +57,7 @@ public class StatsServiceImpl implements StatsService {
             log.info("-------------------------");
             return Arrays.asList(mapper.readValue(mapper.writeValueAsString(response.getBody()), StatDto[].class));
         } catch (IOException exception) {
+
             throw new ClassCastException(exception.getMessage());
         }
     }
@@ -90,6 +89,7 @@ public class StatsServiceImpl implements StatsService {
                     .collect(Collectors.toList());
 
             List<StatDto> stats = getStats(start, end, uris, false);
+
             stats.forEach(stat -> {
                 Long eventId = Long.parseLong(stat.getUri()
                         .split("/", 0)[2]);
