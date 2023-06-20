@@ -58,43 +58,33 @@ public class EventServiceImpl implements EventService {
         checkStartIsBeforeEnd(rangeStart, rangeEnd);
 
         List<EventEntity> events = getEventsByAdminCriteria(users, states, categories, rangeStart, rangeEnd, from, size);
-
         return toResultEventsDto(events);
     }
 
     public List<EventEntity> getEventsByAdminCriteria(List<Long> users, List<EventState> states, List<Long> categories,
                                                       LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
-        log.info("users:" + users);
-        log.info("states:" + states);
-        log.info("categories:" + categories);
-        log.info("rangeEnd:" + rangeEnd);
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<EventEntity> query = builder.createQuery(EventEntity.class);
         Root<EventEntity> root = query.from(EventEntity.class);
         Predicate criteria = builder.conjunction();
 
         if (users != null && !users.isEmpty()) {
-            log.info("***1");
             criteria = builder.and(criteria, root.get("initiator").in(users));
         }
 
         if (states != null && !states.isEmpty()) {
-            log.info("***2");
             criteria = builder.and(criteria, root.get("state").in(states));
         }
 
         if (categories != null && !categories.isEmpty()) {
-            log.info("***3");
             criteria = builder.and(criteria, root.get("category").in(categories));
         }
 
         if (rangeStart != null) {
-            log.info("***4");
             criteria = builder.and(criteria, builder.greaterThanOrEqualTo(root.get("eventDate"), rangeStart));
         }
 
         if (rangeEnd != null) {
-            log.info("***5");
             criteria = builder.and(criteria, builder.lessThanOrEqualTo(root.get("eventDate"), rangeEnd));
         }
 
@@ -390,8 +380,7 @@ public class EventServiceImpl implements EventService {
         Map<Long, Long> confirmedRequests = statsService.getConfirmedRequests(events);
 
         return events.stream()
-                .map((event) -> EventMapper.toEventFullDto(
-                        event,
+                .map(event -> EventMapper.toEventFullDto(event,
                         confirmedRequests.getOrDefault(event.getId(), 0L),
                         views.getOrDefault(event.getId(), 0L)))
                 .collect(Collectors.toList());
@@ -418,7 +407,7 @@ public class EventServiceImpl implements EventService {
 
     private void checkStartIsBeforeEnd(LocalDateTime rangeStart, LocalDateTime rangeEnd) {
         if (rangeStart != null && rangeEnd != null && rangeStart.isAfter(rangeEnd)) {
-            throw new InvalidParametrException(String.format("Field: eventDate. Error: некорректные параметры временного " +
+            throw new ForbiddenException(String.format("Field: eventDate. Error: некорректные параметры временного " +
                     "интервала. Value: rangeStart = %s, rangeEnd = %s", rangeStart, rangeEnd));
         }
     }

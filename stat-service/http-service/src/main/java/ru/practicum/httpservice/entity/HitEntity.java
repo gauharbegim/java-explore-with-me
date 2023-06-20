@@ -2,6 +2,7 @@ package ru.practicum.httpservice.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 @Table(name = "hits")
 @Setter
 @Getter
+@ToString
 public class HitEntity {
     @Id
     @Column(name = "hit_id")

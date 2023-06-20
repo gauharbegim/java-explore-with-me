@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.dto.EndpointHit;
 import ru.practicum.httpservice.entity.AppEntity;
+import ru.practicum.httpservice.entity.HitEntity;
 import ru.practicum.httpservice.exception.InvalidPeriodException;
 import ru.practicum.httpservice.mapper.AppMapper;
 import ru.practicum.httpservice.mapper.HitMapper;
@@ -27,8 +28,8 @@ public class StatServiceImpl implements StatService {
     @Override
     public void saveHit(EndpointHit hit) {
         AppEntity app = getOrCreate(hit);
-
-        hitRepo.save(HitMapper.toHitEntity(hit, app));
+        HitEntity hitEntity = HitMapper.toHitEntity(hit, app);
+        hitRepo.save(hitEntity);
     }
 
     @Override
