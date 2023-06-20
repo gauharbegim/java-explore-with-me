@@ -48,7 +48,7 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public List<ViewStats> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
-        log.info("---> uri: "+uris);
+        log.info("---> uri: " + uris);
         ResponseEntity<Object> response = statsClient.getStat(start, end, uris);
 
         try {
