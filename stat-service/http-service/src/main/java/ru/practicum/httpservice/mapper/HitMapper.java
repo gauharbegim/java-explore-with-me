@@ -4,7 +4,6 @@ import lombok.experimental.UtilityClass;
 import ru.practicum.dto.EndpointHit;
 import ru.practicum.httpservice.entity.AppEntity;
 import ru.practicum.httpservice.entity.HitEntity;
-import ru.practicum.dto.HitDto;
 import ru.practicum.dto.HitOutputDto;
 
 import java.time.LocalDateTime;

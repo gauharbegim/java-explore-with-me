@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 import ru.practicum.httpservice.entity.HitEntity;
 import ru.practicum.dto.ViewStats;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 

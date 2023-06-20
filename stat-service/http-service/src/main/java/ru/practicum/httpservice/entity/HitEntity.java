@@ -2,7 +2,6 @@ package ru.practicum.httpservice.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import ru.practicum.dto.ViewStats;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
