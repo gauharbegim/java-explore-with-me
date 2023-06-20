@@ -48,13 +48,9 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public List<ViewStats> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
-        log.info("---> uri: " + uris);
         ResponseEntity<Object> response = statsClient.getStat(start, end, uris);
 
         try {
-            log.info("-------------------------");
-            log.info("body:" + response.getBody().toString());
-            log.info("-------------------------");
             return Arrays.asList(mapper.readValue(mapper.writeValueAsString(response.getBody()), ViewStats[].class));
         } catch (IOException exception) {
 
@@ -64,9 +60,6 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public Map<Long, Long> getViews(List<EventEntity> events) {
-        log.info("Отправлен запрос на получение статистики неуникальных посещений в виде Map<eventId, count> " +
-                "для списка событий.");
-
         Map<Long, Long> views = new HashMap<>();
 
         List<EventEntity> publishedEvents = getPublished(events);
