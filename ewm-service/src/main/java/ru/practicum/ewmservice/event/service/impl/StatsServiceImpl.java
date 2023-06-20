@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.dto.StatDto;
+import ru.practicum.dto.ViewStats;
 import ru.practicum.ewmservice.constants.SystemConstats;
 import ru.practicum.ewmservice.event.entity.EventEntity;
 import ru.practicum.ewmservice.event.repository.RequestRepository;
@@ -47,7 +47,7 @@ public class StatsServiceImpl implements StatsService {
     }
 
     @Override
-    public List<StatDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+    public List<ViewStats> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
         log.info("---> uri: "+uris);
         ResponseEntity<Object> response = statsClient.getStat(start, end, uris);
 
@@ -55,7 +55,7 @@ public class StatsServiceImpl implements StatsService {
             log.info("-------------------------");
             log.info("body:" + response.getBody().toString());
             log.info("-------------------------");
-            return Arrays.asList(mapper.readValue(mapper.writeValueAsString(response.getBody()), StatDto[].class));
+            return Arrays.asList(mapper.readValue(mapper.writeValueAsString(response.getBody()), ViewStats[].class));
         } catch (IOException exception) {
 
             throw new ClassCastException(exception.getMessage());
@@ -88,7 +88,7 @@ public class StatsServiceImpl implements StatsService {
                     .map(id -> ("/events/" + id))
                     .collect(Collectors.toList());
 
-            List<StatDto> stats = getStats(start, end, uris, false);
+            List<ViewStats> stats = getStats(start, end, uris, false);
 
             stats.forEach(stat -> {
                 Long eventId = Long.parseLong(stat.getUri()

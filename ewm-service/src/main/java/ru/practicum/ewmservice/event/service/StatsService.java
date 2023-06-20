@@ -1,6 +1,6 @@
 package ru.practicum.ewmservice.event.service;
 
-import ru.practicum.dto.StatDto;
+import ru.practicum.dto.ViewStats;
 import ru.practicum.ewmservice.event.entity.EventEntity;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,7 +11,7 @@ import java.util.Map;
 public interface StatsService {
     void addHit(HttpServletRequest request);
 
-    List<StatDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique);
+    List<ViewStats> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique);
 
     Map<Long, Long> getViews(List<EventEntity> events);
 
