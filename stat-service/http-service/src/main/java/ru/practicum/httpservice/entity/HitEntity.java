@@ -2,7 +2,6 @@ package ru.practicum.httpservice.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -11,16 +10,14 @@ import java.time.LocalDateTime;
 @Table(name = "hits")
 @Setter
 @Getter
-@ToString
 public class HitEntity {
     @Id
     @Column(name = "hit_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "app_id")
-    private AppEntity app;
+    @Column(name = "app_name")
+    private String appName;
 
     @Column(name = "uri")
     private String uri;

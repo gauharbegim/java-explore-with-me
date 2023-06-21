@@ -39,6 +39,7 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public void addHit(HttpServletRequest request) {
+        log.info("**********--------addHit-------*************");
         statsClient.saveHit(appName,
                 request.getRequestURI(),
                 request.getRemoteAddr(),
@@ -48,6 +49,7 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public List<ViewStats> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+        log.info("**********--------getStats-------*************");
         ResponseEntity<Object> response = statsClient.getStat(start, end, uris);
 
         try {
@@ -60,6 +62,7 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public Map<Long, Long> getViews(List<EventEntity> events) {
+        log.info("**********--------getViews-------*************");
         Map<Long, Long> views = new HashMap<>();
 
         List<EventEntity> publishedEvents = getPublished(events);
@@ -95,6 +98,7 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public Map<Long, Long> getConfirmedRequests(List<EventEntity> events) {
+        log.info("**********--------getConfirmedRequests-------*************");
         List<Long> eventsId = getPublished(events).stream()
                 .map(EventEntity::getId)
                 .collect(Collectors.toList());

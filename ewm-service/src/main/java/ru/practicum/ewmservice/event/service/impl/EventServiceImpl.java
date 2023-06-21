@@ -55,9 +55,14 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventFullDto> getEventsByAdmin(List<Long> users, List<EventState> states, List<Long> categories,
                                                LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
+        log.info(".........................................................................................................");
         checkStartIsBeforeEnd(rangeStart, rangeEnd);
 
         List<EventEntity> events = getEventsByAdminCriteria(users, states, categories, rangeStart, rangeEnd, from, size);
+        log.info("---------------------------events start-----------------------");
+        log.info(""+events);
+        log.info("---------------------------events end-----------------------");
+        log.info(".........................................................................................................");
         return toResultEventsDto(events);
     }
 
