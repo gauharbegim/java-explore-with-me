@@ -55,14 +55,9 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventFullDto> getEventsByAdmin(List<Long> users, List<EventState> states, List<Long> categories,
                                                LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
-        log.info(".........................................................................................................");
         checkStartIsBeforeEnd(rangeStart, rangeEnd);
 
         List<EventEntity> events = getEventsByAdminCriteria(users, states, categories, rangeStart, rangeEnd, from, size);
-        log.info("---------------------------events start-----------------------");
-        log.info(""+events);
-        log.info("---------------------------events end-----------------------");
-        log.info(".........................................................................................................");
         return toResultEventsDto(events);
     }
 
@@ -161,7 +156,6 @@ public class EventServiceImpl implements EventService {
         }
 
         EventEntity eventEntity = eventRepository.save(event);
-        log.info("---- eventEntity: " + eventEntity);
         return toEventDto(eventEntity);
     }
 
@@ -189,7 +183,6 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventFullDto getEventByPrivate(Long userId, Long eventId) {
-        log.info("Вывод события с id {}, созданного пользователем с id {}", eventId, userId);
 
         userService.getUserById(userId);
 
