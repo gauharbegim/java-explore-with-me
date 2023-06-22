@@ -45,7 +45,7 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public List<ViewStats> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
-        ResponseEntity<Object> response = statsClient.getStat(start, end, uris, unique);
+        ResponseEntity<Object> response = statsClient.getStats(start, end, uris, unique);
 
         try {
             return Arrays.asList(mapper.readValue(mapper.writeValueAsString(response.getBody()), ViewStats[].class));

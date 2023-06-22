@@ -3,7 +3,6 @@ package ru.practicum.httpservice.mapper;
 import lombok.experimental.UtilityClass;
 import ru.practicum.dto.EndpointHit;
 import ru.practicum.httpservice.entity.HitEntity;
-import ru.practicum.dto.HitOutputDto;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
