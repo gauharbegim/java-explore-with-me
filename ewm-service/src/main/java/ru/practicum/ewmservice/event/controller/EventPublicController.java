@@ -1,7 +1,6 @@
 package ru.practicum.ewmservice.event.controller;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -27,7 +26,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/events")
 @Validated
-@Slf4j
 public class EventPublicController {
     private final EventService eventService;
 
@@ -51,8 +49,7 @@ public class EventPublicController {
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public EventFullDto getEventByPublic(@PathVariable Long id,
-                                         HttpServletRequest request) {
-        EventFullDto eventFullDto = eventService.getEventByPublic(id, request);
-        return eventFullDto;
+                                           HttpServletRequest request) {
+        return eventService.getEventByPublic(id, request);
     }
 }
