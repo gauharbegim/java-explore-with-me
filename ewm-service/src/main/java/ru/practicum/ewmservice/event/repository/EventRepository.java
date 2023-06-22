@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface EventRepository extends JpaRepository<EventEntity, Long>, EventCriteriaRepository {
+public interface EventRepository extends JpaRepository<EventEntity, Long> {
     List<EventEntity> findAllByInitiatorId(Long userId, Pageable pageable);
 
     Optional<EventEntity> findByIdAndInitiatorId(Long eventId, Long userId);
