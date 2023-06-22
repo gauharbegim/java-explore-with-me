@@ -8,6 +8,7 @@ import ru.practicum.dto.ViewStats;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface HitRepository extends JpaRepository<HitEntity, Long> {
@@ -40,4 +41,7 @@ public interface HitRepository extends JpaRepository<HitEntity, Long> {
             "GROUP BY s.app, s.uri " +
             "ORDER BY COUNT(s.ip) DESC")
     List<ViewStats> getStatsByUris(LocalDateTime start, LocalDateTime end, List<String> uri);
+
+
+    Optional<HitEntity> findByIpAndUri(String ip, String uri);
 }

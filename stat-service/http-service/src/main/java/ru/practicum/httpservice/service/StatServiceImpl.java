@@ -22,7 +22,9 @@ public class StatServiceImpl implements StatService {
     @Override
     @Transactional
     public void saveHit(EndpointHit endpointHit) {
-        hitRepository.save(HitMapper.toHitEntity(endpointHit));
+        if (hitRepository.findByIpAndUri(endpointHit.getIp(), endpointHit.getUri()).isEmpty()) {
+            hitRepository.save(HitMapper.toHitEntity(endpointHit));
+        }
     }
 
     @Override
