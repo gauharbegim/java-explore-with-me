@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.dto.ViewStats;
 import ru.practicum.ewmservice.constants.SystemConstats;
 import ru.practicum.ewmservice.event.entity.EventEntity;
@@ -27,7 +26,6 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 @Slf4j
 public class StatsServiceImpl implements StatsService {
     private final StatsClient statsClient;
@@ -39,7 +37,9 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public void addHit(HttpServletRequest request) {
-        statsClient.saveHit(appName, request.getRequestURI(), request.getRemoteAddr(),
+        statsClient.saveHit(appName,
+                request.getRequestURI(),
+                request.getRemoteAddr(),
                 LocalDateTime.parse(LocalDateTime.now().format(SystemConstats.DT_FORMATTER), SystemConstats.DT_FORMATTER));
     }
 

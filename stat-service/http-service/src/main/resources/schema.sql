@@ -6,5 +6,5 @@ CREATE table IF NOT EXISTS hits
     app_name    varchar   NOT NULL,
     uri       varchar   NOT NULL,
     ip        varchar   NOT NULL,
-    timestamp timestamp NOT NULL
+    timestamp TIMESTAMP WITHOUT TIME ZONE not null
 );

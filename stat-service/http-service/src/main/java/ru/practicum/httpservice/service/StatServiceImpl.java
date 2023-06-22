@@ -9,22 +9,26 @@ import ru.practicum.httpservice.mapper.HitMapper;
 import ru.practicum.httpservice.repository.HitRepository;
 import ru.practicum.dto.ViewStats;
 
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class StatServiceImpl implements StatService {
     private final HitRepository hitRepository;
 
     @Override
     @Transactional
     public void saveHit(EndpointHit endpointHit) {
-            HitEntity hitEntity = HitMapper.toHitEntity(endpointHit);
-            hitRepository.save(hitEntity);
+        log.info("--------------------------saveHit start------------------------------------");
+        log.info("endpointHit:  " + endpointHit);
+        HitEntity hitEntity = HitMapper.toHitEntity(endpointHit);
+        hitRepository.save(hitEntity);
+        log.info("--------------------------saveHit end------------------------------------");
     }
 
     @Override
