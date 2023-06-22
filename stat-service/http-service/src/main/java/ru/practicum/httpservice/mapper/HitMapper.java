@@ -12,7 +12,6 @@ import java.time.format.DateTimeFormatter;
 public class HitMapper {
     public static HitEntity toHitEntity(EndpointHit dto) {
         HitEntity hit = new HitEntity();
-
         hit.setApp(dto.getApp());
         hit.setUri(dto.getUri());
         hit.setIp(dto.getIp());

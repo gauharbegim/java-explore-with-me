@@ -8,7 +8,6 @@ import ru.practicum.ewmservice.category.entity.CategoryEntity;
 import java.util.List;
 
 public interface CategoryService {
-    //TODO check
     CategoryDto create(NewCategoryDto newCategoryDto);
 
     List<CategoryDto> getAll(Pageable pageable);

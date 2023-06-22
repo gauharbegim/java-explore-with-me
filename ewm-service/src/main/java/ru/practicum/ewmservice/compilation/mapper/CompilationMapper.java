@@ -12,7 +12,6 @@ public class CompilationMapper {
     public static CompilationEntity toCompilationEntity(NewCompilationDto newCompilationDto, List<EventEntity> events) {
         return CompilationEntity.builder()
                 .id(null)
-//                TODO clean
                 .events(events)
                 .pinned(newCompilationDto.getPinned())
                 .title(newCompilationDto.getTitle())

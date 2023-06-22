@@ -4,8 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.dto.EndpointHit;
-import ru.practicum.httpservice.entity.HitEntity;
-import ru.practicum.httpservice.exception.InvalidPeriodException;
 import ru.practicum.httpservice.mapper.HitMapper;
 import ru.practicum.httpservice.repository.HitRepository;
 import ru.practicum.dto.ViewStats;
@@ -19,39 +17,28 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 public class StatServiceImpl implements StatService {
-    private final HitRepository hitRepo;
+    private final HitRepository hitRepository;
 
     @Override
-    public void saveHit(EndpointHit hit) {
-        HitEntity hitEntity = HitMapper.toHitEntity(hit);
-        hitRepo.save(hitEntity);
+    @Transactional
+    public void saveHit(EndpointHit endpointHit) {
+        hitRepository.save(HitMapper.toHitEntity(endpointHit));
     }
 
     @Override
     public List<ViewStats> getStat(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
-        checkPeriod(start, end);
-        return get(start, end, uris, unique);
-    }
-
-    private List<ViewStats> get(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
-        if (uris.isEmpty()) {
+        if (uris == null || uris.isEmpty()) {
             if (unique) {
-                return hitRepo.getAllStatsDistinctIp(start, end);
+                return hitRepository.getAllStatsDistinctIp(start, end);
             } else {
-                return hitRepo.getAllStats(start, end);
+                return hitRepository.getAllStats(start, end);
             }
         } else {
             if (unique) {
-                return hitRepo.getStatsByUrisDistinctIp(start, end, uris);
+                return hitRepository.getStatsByUrisDistinctIp(start, end, uris);
             } else {
-                return hitRepo.getStatsByUris(start, end, uris);
+                return hitRepository.getStatsByUris(start, end, uris);
             }
-        }
-    }
-
-    private void checkPeriod(LocalDateTime start, LocalDateTime end) {
-        if (end.isBefore(start)) {
-            throw new InvalidPeriodException("Неверные параметры периода");
         }
     }
 

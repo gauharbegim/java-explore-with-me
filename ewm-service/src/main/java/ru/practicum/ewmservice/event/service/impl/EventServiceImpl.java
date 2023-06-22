@@ -178,6 +178,7 @@ public class EventServiceImpl implements EventService {
         UserEntity eventUser = userService.getUserById(userId);
         CategoryEntity eventCategory = categoryService.getCategoryById(newEventDto.getCategory());
         LocationEntity eventLocation = getOrSaveLocation(newEventDto.getLocation());
+        log.info("----------------------createEventByPrivate-----------------------------");
         EventEntity newEvent = EventMapper.toEventEntity(newEventDto, eventCategory, eventLocation, eventUser);
         return toEventDto(eventRepository.save(newEvent));
     }
@@ -290,6 +291,7 @@ public class EventServiceImpl implements EventService {
             eventsShortDto.sort(Comparator.comparing(EventShortDto::getEventDate));
         }
 
+        log.info("------------------------statsService.addHit-----------------------");
         statsService.addHit(request);
 
         return eventsShortDto;
@@ -342,6 +344,7 @@ public class EventServiceImpl implements EventService {
             throw new NotFoundException("Событие с таким id не опубликовано.");
         }
 
+        log.info("**************** add hit to this entity: " + event + "**************************");
         statsService.addHit(request);
 
         return toEventDto(event);

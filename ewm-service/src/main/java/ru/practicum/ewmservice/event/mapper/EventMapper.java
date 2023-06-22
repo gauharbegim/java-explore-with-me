@@ -56,12 +56,6 @@ public class EventMapper {
                 .build();
     }
 
-//    public static EventEntity toEventEntity(Long eventId) {
-//        return EventEntity.builder()
-//                .id(null)
-//                .build();
-//    }
-
     public static EventShortDto toEventShortDto(EventEntity entity, Long confirmedRequests, Long view) {
         return EventShortDto.builder()
                 .annotation(entity.getAnnotation())
@@ -75,11 +69,4 @@ public class EventMapper {
                 .views(view)
                 .build();
     }
-
-//    public static List<EventShortDto> toListEventShortDto(List<EventEntity> entityList) {
-//        return entityList.stream().map(EventMapper::toEventShortDto).collect(Collectors.toList());
-//    }
-//    public static List<EventFullDto> toListEventsFullDto(List<EventEntity> entityList) {
-//        return entityList.stream().map(EventMapper::toEventFullDto).collect(Collectors.toList());
-//    }
 }

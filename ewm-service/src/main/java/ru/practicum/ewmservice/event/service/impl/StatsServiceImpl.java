@@ -52,9 +52,10 @@ public class StatsServiceImpl implements StatsService {
 
         try {
             return Arrays.asList(mapper.readValue(mapper.writeValueAsString(response.getBody()), ViewStats[].class));
-        } catch (IOException exception) {
 
+        } catch (IOException exception) {
             throw new ClassCastException(exception.getMessage());
+
         }
     }
 
