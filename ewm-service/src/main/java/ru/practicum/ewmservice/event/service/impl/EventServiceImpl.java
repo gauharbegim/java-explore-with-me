@@ -138,7 +138,7 @@ public class EventServiceImpl implements EventService {
         CategoryEntity eventCategory = categoryService.getCategoryById(newEventDto.getCategory());
         LocationEntity eventLocation = getOrSaveLocation(newEventDto.getLocation());
 
-        EventEntity newEventEntity = EventMapper.toEventEntity(newEventDto,eventCategory, eventLocation,  eventUser);
+        EventEntity newEventEntity = EventMapper.toEventEntity(newEventDto, eventCategory, eventLocation, eventUser);
 
         return toEventFullDto(eventRepository.save(newEventEntity));
     }

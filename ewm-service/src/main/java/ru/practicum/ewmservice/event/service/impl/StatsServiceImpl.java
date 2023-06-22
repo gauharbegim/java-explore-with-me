@@ -45,9 +45,6 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public List<ViewStats> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
-        log.info("Отправлен запрос на получение статистики к серверу статистики с параметрами " +
-                "start = {}, end = {}, uris = {}, unique = {}", start, end, uris, unique);
-
         ResponseEntity<Object> response = statsClient.getStat(start, end, uris, unique);
 
         try {
@@ -59,9 +56,6 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public Map<Long, Long> getViews(List<EventEntity> events) {
-        log.info("Отправлен запрос на получение статистики неуникальных посещений в виде Map<eventId, count> " +
-                "для списка событий.");
-
         Map<Long, Long> views = new HashMap<>();
 
         List<EventEntity> publishedEvents = getPublished(events);

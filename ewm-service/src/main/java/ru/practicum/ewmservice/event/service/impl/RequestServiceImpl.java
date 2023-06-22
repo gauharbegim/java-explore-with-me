@@ -41,8 +41,6 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public List<ParticipationRequestDto> getEventRequestsByRequester(Long userId) {
-        log.info("Вывод списка запросов на участие в чужих событиях пользователем с id {}", userId);
-
         userService.getUserById(userId);
 
         return toParticipationRequestsDto(requestRepository.findAllByRequesterId(userId));
@@ -55,17 +53,17 @@ public class RequestServiceImpl implements RequestService {
         EventEntity event = eventService.getEventById(eventId);
 
         if (Objects.equals(event.getInitiator().getId(), userId)) {
-            throw new ForbiddenException("Initiator: " + event.getInitiator().getId() + " User: " + user);
+            throw new ForbiddenException("Нельзя создавать запрос на собственное событие.");
         }
 
         if (!event.getState().equals(EventState.PUBLISHED)) {
-            throw new ForbiddenException("Event state: " + event.getState());
+            throw new ForbiddenException("Нельзя создавать запрос на неопубликованное событие.");
         }
 
         Optional<RequestEntity> oldRequest = requestRepository.findByEventIdAndRequesterId(eventId, userId);
 
         if (oldRequest.isPresent()) {
-            throw new ForbiddenException("Повторный запрос на eventId:" + eventId + " user: " + userId);
+            throw new ForbiddenException("Создавать повторный запрос запрещено.");
         }
 
         checkIsNewLimitGreaterOld(
@@ -94,14 +92,13 @@ public class RequestServiceImpl implements RequestService {
         userService.getUserById(userId);
 
         RequestEntity request = requestRepository.findById(requestId)
-                .orElseThrow(() -> new NotFoundException("Заявка по id" + requestId + " не найдена"));
+                .orElseThrow(() -> new NotFoundException("Заявки на участие с таким id не существует."));
 
         checkUserIsOwner(request.getRequester().getId(), userId);
 
         request.setStatus(RequestStatus.CANCELED);
-        RequestEntity requestEntity = requestRepository.save(request);
-        log.info("requestEntity: " + requestEntity);
-        return RequestMapper.toParticipationRequestDto(requestEntity);
+
+        return RequestMapper.toParticipationRequestDto(requestRepository.save(request));
     }
 
     @Override
@@ -135,13 +132,13 @@ public class RequestServiceImpl implements RequestService {
         List<RequestEntity> requests = requestRepository.findAllByIdIn(eventRequestStatusUpdateRequest.getRequestIds());
 
         if (requests.size() != eventRequestStatusUpdateRequest.getRequestIds().size()) {
-            throw new NotFoundException("запросы не найдены.");
+            throw new NotFoundException("Некоторые запросы на участие не найдены.");
         }
 
         if (!requests.stream()
                 .map(RequestEntity::getStatus)
                 .allMatch(RequestStatus.PENDING::equals)) {
-            throw new ForbiddenException("Статус заявки");
+            throw new ForbiddenException("Изменять можно только заявки, находящиеся в ожидании.");
         }
 
         if (eventRequestStatusUpdateRequest.getStatus().equals(RequestStatusAction.REJECTED)) {
@@ -179,14 +176,14 @@ public class RequestServiceImpl implements RequestService {
 
     private void checkIsNewLimitGreaterOld(Long newLimit, Integer eventParticipantLimit) {
         if (eventParticipantLimit != 0 && (newLimit > eventParticipantLimit)) {
-            throw new ForbiddenException(String.format("Лимит подтвержденных запросов: %d",
+            throw new ForbiddenException(String.format("Достигнут лимит подтвержденных запросов на участие: %d",
                     eventParticipantLimit));
         }
     }
 
     private void checkUserIsOwner(Long id, Long userId) {
         if (!Objects.equals(id, userId)) {
-            throw new ForbiddenException("Владелец не " + userId);
+            throw new ForbiddenException("Пользователь не является владельцем.");
         }
     }
 }
