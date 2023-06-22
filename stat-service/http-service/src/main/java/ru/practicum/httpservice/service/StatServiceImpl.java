@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.dto.EndpointHit;
-import ru.practicum.httpservice.entity.HitEntity;
 import ru.practicum.httpservice.mapper.HitMapper;
 import ru.practicum.httpservice.repository.HitRepository;
 import ru.practicum.dto.ViewStats;
@@ -12,7 +11,6 @@ import ru.practicum.dto.ViewStats;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -21,15 +19,10 @@ import java.util.Optional;
 public class StatServiceImpl implements StatService {
     private final HitRepository hitRepository;
 
-
     @Override
     @Transactional
     public void saveHit(EndpointHit endpointHit) {
-        Optional<HitEntity> hit = hitRepository.findByAppAndUriAndIp(endpointHit.getApp(), endpointHit.getUri(), endpointHit.getIp());
-        if (hit.isEmpty()) {
-            HitEntity hitEntity = HitMapper.toHitEntity(endpointHit);
-            hitRepository.save(hitEntity);
-        }
+        hitRepository.save(HitMapper.toHitEntity(endpointHit));
     }
 
     @Override
