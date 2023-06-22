@@ -48,12 +48,14 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public List<ViewStats> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
-        ResponseEntity<Object> response = statsClient.getStat(start, end, uris, unique);
+        ResponseEntity<Object> response = statsClient.getStat(start, end, uris);
 
         try {
             return Arrays.asList(mapper.readValue(mapper.writeValueAsString(response.getBody()), ViewStats[].class));
+
         } catch (IOException exception) {
             throw new ClassCastException(exception.getMessage());
+
         }
     }
 
@@ -80,7 +82,9 @@ public class StatsServiceImpl implements StatsService {
                     .map(id -> ("/events/" + id))
                     .collect(Collectors.toList());
 
-            List<ViewStats> stats = getStats(start, end, uris, null);
+            //TODO
+            List<ViewStats> stats = getStats(start, end, uris, false);
+
             stats.forEach(stat -> {
                 Long eventId = Long.parseLong(stat.getUri()
                         .split("/", 0)[2]);

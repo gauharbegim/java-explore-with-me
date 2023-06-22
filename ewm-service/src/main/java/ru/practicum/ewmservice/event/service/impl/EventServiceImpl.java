@@ -19,7 +19,6 @@ import ru.practicum.ewmservice.event.repository.LocationRepository;
 import ru.practicum.ewmservice.event.service.EventService;
 import ru.practicum.ewmservice.event.service.StatsService;
 import ru.practicum.ewmservice.exception.ForbiddenException;
-import ru.practicum.ewmservice.exception.InvalidParametrException;
 import ru.practicum.ewmservice.exception.NotFoundException;
 import ru.practicum.ewmservice.user.entity.UserEntity;
 import ru.practicum.ewmservice.user.service.UserService;
@@ -55,8 +54,9 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    @Transactional
     public EventFullDto editEventByAdmin(Long eventId, UpdateEventAdminRequest updateEventAdminRequest) {
+        log.info("Обновление события с id {} по запросу администратора с параметрами {}", eventId, updateEventAdminRequest);
+
         checkNewEventDate(updateEventAdminRequest.getEventDate(), LocalDateTime.now().plusHours(1));
 
         EventEntity event = getEventById(eventId);
@@ -130,7 +130,6 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    @Transactional
     public EventFullDto createEventByPrivate(Long userId, NewEventDto newEventDto) {
         checkNewEventDate(newEventDto.getEventDate(), LocalDateTime.now().plusHours(2));
 
@@ -138,13 +137,15 @@ public class EventServiceImpl implements EventService {
         CategoryEntity eventCategory = categoryService.getCategoryById(newEventDto.getCategory());
         LocationEntity eventLocation = getOrSaveLocation(newEventDto.getLocation());
 
-        EventEntity newEventEntity = EventMapper.toEventEntity(newEventDto, eventCategory, eventLocation, eventUser);
+        EventEntity newEventEntity = EventMapper.toEventEntity(newEventDto,eventCategory, eventLocation,  eventUser);
 
         return toEventFullDto(eventRepository.save(newEventEntity));
     }
 
     @Override
     public EventFullDto getEventByPrivate(Long userId, Long eventId) {
+        log.info("Вывод события с id {}, созданного пользователем с id {}", eventId, userId);
+
         userService.getUserById(userId);
 
         EventEntity event = getEventByIdAndInitiatorId(eventId, userId);
@@ -153,8 +154,9 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    @Transactional
     public EventFullDto editEventByPrivate(Long userId, Long eventId, UpdateEventUserRequest updateEventUserRequest) {
+        log.info("Обновление события с id {} по запросу пользователя с id {} с новыми параметрами {}",
+                eventId, userId, updateEventUserRequest);
 
         checkNewEventDate(updateEventUserRequest.getEventDate(), LocalDateTime.now().plusHours(2));
 
@@ -253,6 +255,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventFullDto getEventByPublic(Long eventId, HttpServletRequest request) {
+        log.info("----> getEventByPublic(Long eventId, HttpServletRequest request)");
         EventEntity event = getEventById(eventId);
 
         if (!event.getState().equals(EventState.PUBLISHED)) {
@@ -272,6 +275,8 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<EventEntity> getEventsByIds(List<Long> eventsId) {
+        log.info("Вывод списка событий с ids {}", eventsId);
+
         if (eventsId.isEmpty()) {
             return new ArrayList<>();
         }
@@ -281,6 +286,8 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<EventShortDto> toEventsShortDto(List<EventEntity> events) {
+        log.info("Преобразование в EventShortDto списка событий events {}", events);
+
         Map<Long, Long> views = statsService.getViews(events);
         Map<Long, Long> confirmedRequests = statsService.getConfirmedRequests(events);
 
@@ -309,6 +316,8 @@ public class EventServiceImpl implements EventService {
     }
 
     private EventEntity getEventByIdAndInitiatorId(Long eventId, Long userId) {
+        log.info("Вывод события с id {}", eventId);
+
         return eventRepository.findByIdAndInitiatorId(eventId, userId)
                 .orElseThrow(() -> new NotFoundException("События с таким id не существует."));
     }
@@ -325,14 +334,14 @@ public class EventServiceImpl implements EventService {
 
     private void checkStartIsBeforeEnd(LocalDateTime rangeStart, LocalDateTime rangeEnd) {
         if (rangeStart != null && rangeEnd != null && rangeStart.isAfter(rangeEnd)) {
-            throw new InvalidParametrException(String.format("Field: eventDate. Error: некорректные параметры временного " +
+            throw new ForbiddenException(String.format("Field: eventDate. Error: некорректные параметры временного " +
                     "интервала. Value: rangeStart = %s, rangeEnd = %s", rangeStart, rangeEnd));
         }
     }
 
     private void checkNewEventDate(LocalDateTime newEventDate, LocalDateTime minTimeBeforeEventStart) {
         if (newEventDate != null && newEventDate.isBefore(minTimeBeforeEventStart)) {
-            throw new InvalidParametrException(String.format("Field: eventDate. Error: остается слишком мало времени для " +
+            throw new ForbiddenException(String.format("Field: eventDate. Error: остается слишком мало времени для " +
                     "подготовки. Value: %s", newEventDate));
         }
     }
