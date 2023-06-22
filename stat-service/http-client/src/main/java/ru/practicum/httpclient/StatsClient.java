@@ -19,7 +19,7 @@ import java.util.Map;
 @Slf4j
 public class StatsClient extends BaseClient {
     @Autowired
-    public StatsClient(@Value("${stats-server.url}") String serverUrl, RestTemplateBuilder builder) {
+    public StatsClient(@Value("${stats-client.uri}") String serverUrl, RestTemplateBuilder builder) {
         super(builder
                 .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl))
                 .requestFactory(HttpComponentsClientHttpRequestFactory::new)
@@ -35,18 +35,6 @@ public class StatsClient extends BaseClient {
                 .timestamp(timestamp.format(StatConstants.DT_FORMATTER))
                 .build();
         return post(StatConstants.HIT_ENDPOINT, endpointHit);
-    }
-
-    public ResponseEntity<Object> getStat(LocalDateTime start, LocalDateTime end, List<String> uris) {
-        return getStats(start, end, uris, null);
-    }
-
-    public ResponseEntity<Object> getStat(LocalDateTime start, LocalDateTime end) {
-        return getStats(start, end, null, null);
-    }
-
-    public ResponseEntity<Object> getStat(LocalDateTime start, LocalDateTime end, Boolean unique) {
-        return getStats(start, end, null, unique);
     }
 
     public ResponseEntity<Object> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
@@ -68,6 +56,9 @@ public class StatsClient extends BaseClient {
         if (unique != null) {
             uriBuilder.append("&unique=").append(unique);
         }
+
+
+        log.info("------> getStats: " + uriBuilder.toString());
 
         return get(uriBuilder.toString(), parameters);
     }
