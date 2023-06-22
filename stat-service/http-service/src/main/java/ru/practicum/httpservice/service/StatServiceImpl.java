@@ -33,6 +33,10 @@ public class StatServiceImpl implements StatService {
 
     @Override
     public List<ViewStats> getStat(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
+        if (start.isAfter(end)) {
+            throw new IllegalArgumentException("Ошибка в временном промежутоке");
+        }
+
         if (uris == null || uris.isEmpty()) {
             if (unique) {
                 return hitRepository.getAllStatsDistinctIp(start, end);
