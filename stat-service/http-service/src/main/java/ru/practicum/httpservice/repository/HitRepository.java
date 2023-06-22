@@ -42,5 +42,6 @@ public interface HitRepository extends JpaRepository<HitEntity, Long> {
             "ORDER BY COUNT(s.ip) DESC")
     List<ViewStats> getStatsByUris(LocalDateTime start, LocalDateTime end, List<String> uri);
 
-    Optional<HitEntity> findByAppAndUriAndIp(String app, String uri, String ip);
+
+    Optional<HitEntity> findByIpAndUri(String ip, String uri);
 }

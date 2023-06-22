@@ -24,7 +24,7 @@ public class StatServiceImpl implements StatService {
     @Override
     @Transactional
     public void saveHit(EndpointHit endpointHit) {
-        Optional<HitEntity> hit = hitRepository.findByAppAndUriAndIp(endpointHit.getApp(), endpointHit.getUri(), endpointHit.getIp());
+        Optional<HitEntity> hit = hitRepository.findByIpAndUri(endpointHit.getIp(), endpointHit.getUri());
         if (hit.isEmpty()) {
             HitEntity hitEntity = HitMapper.toHitEntity(endpointHit);
             hitRepository.save(hitEntity);
@@ -37,7 +37,7 @@ public class StatServiceImpl implements StatService {
             throw new IllegalArgumentException("Ошибка в временном промежутоке");
         }
 
-        if (uris == null || uris.isEmpty()) {
+        if (uris.isEmpty()) {
             if (unique) {
                 return hitRepository.getAllStatsDistinctIp(start, end);
             } else {
