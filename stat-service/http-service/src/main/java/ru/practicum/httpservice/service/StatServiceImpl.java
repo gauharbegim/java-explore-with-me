@@ -4,12 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.dto.EndpointHit;
-import ru.practicum.httpservice.entity.AppEntity;
 import ru.practicum.httpservice.entity.HitEntity;
 import ru.practicum.httpservice.exception.InvalidPeriodException;
-import ru.practicum.httpservice.mapper.AppMapper;
 import ru.practicum.httpservice.mapper.HitMapper;
-import ru.practicum.httpservice.repository.AppRepository;
 import ru.practicum.httpservice.repository.HitRepository;
 import ru.practicum.dto.ViewStats;
 
@@ -22,13 +19,11 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 public class StatServiceImpl implements StatService {
-    private final AppRepository appRepo;
     private final HitRepository hitRepo;
 
     @Override
     public void saveHit(EndpointHit hit) {
-        AppEntity app = getOrCreate(hit);
-        HitEntity hitEntity = HitMapper.toHitEntity(hit, app);
+        HitEntity hitEntity = HitMapper.toHitEntity(hit);
         hitRepo.save(hitEntity);
     }
 
@@ -36,11 +31,6 @@ public class StatServiceImpl implements StatService {
     public List<ViewStats> getStat(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
         checkPeriod(start, end);
         return get(start, end, uris, unique);
-    }
-
-    private AppEntity getOrCreate(EndpointHit hit) {
-        return appRepo.getByName(hit.getApp())
-                .orElseGet(() -> appRepo.save(AppMapper.toAppEntity(hit)));
     }
 
     private List<ViewStats> get(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
