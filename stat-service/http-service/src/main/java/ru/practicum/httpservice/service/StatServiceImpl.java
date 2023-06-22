@@ -12,7 +12,6 @@ import ru.practicum.dto.ViewStats;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -24,11 +23,8 @@ public class StatServiceImpl implements StatService {
     @Override
     @Transactional
     public void saveHit(EndpointHit endpointHit) {
-        Optional<HitEntity> hit = hitRepository.findByIpAndUri(endpointHit.getIp(), endpointHit.getUri());
-        if (hit.isEmpty()) {
             HitEntity hitEntity = HitMapper.toHitEntity(endpointHit);
             hitRepository.save(hitEntity);
-        }
     }
 
     @Override
