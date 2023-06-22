@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@Transactional(readOnly = true)
+@Transactional
 public class EventServiceImpl implements EventService {
     private final UserService userService;
     private final CategoryService categoryService;
