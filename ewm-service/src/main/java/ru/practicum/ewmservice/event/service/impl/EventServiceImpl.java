@@ -55,6 +55,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventFullDto editEventByAdmin(Long eventId, UpdateEventAdminRequest updateEventAdminRequest) {
         checkNewEventDate(updateEventAdminRequest.getEventDate(), LocalDateTime.now().plusHours(1));
 
@@ -129,6 +130,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventFullDto createEventByPrivate(Long userId, NewEventDto newEventDto) {
         checkNewEventDate(newEventDto.getEventDate(), LocalDateTime.now().plusHours(2));
 
@@ -151,6 +153,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventFullDto editEventByPrivate(Long userId, Long eventId, UpdateEventUserRequest updateEventUserRequest) {
 
         checkNewEventDate(updateEventUserRequest.getEventDate(), LocalDateTime.now().plusHours(2));
