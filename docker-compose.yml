@@ -1,50 +1,56 @@
 version: '3.1'
 services:
-
-  stats-server:
-    build: stat-service/http-service
-    image: ewm-stat-service
-    container_name: ewm-stat-service
+  stat-service:
+    build: ./stat-service/http-service
+    image: stat-service
+    container_name: stat-service
     ports:
       - "9090:9090"
     depends_on:
       - stat-db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://stat-db:5432/ewm-stat
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=root
+      - spring.datasource.url=jdbc:postgresql://stat-db:5432/stat
+      - spring.datasource.username=root
+      - spring.datasource.password=root
+
+  stat-db:
+    image: postgres:14-alpine
+    container_name: stat-db
+    volumes:
+      - /var/lib/postgresql/data/
+    ports:
+      - "6541:5432"
+    environment:
+      - POSTGRES_DB=stat
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
 
   ewm-service:
-    build: ewm-service
-    image: ewm-main-service
-    container_name: ewm-main-service
+    build: ./ewm-service
+    container_name: ewm-service
     ports:
       - "8080:8080"
     depends_on:
       - ewm-db
-      - stats-server
+      - stat-service
     environment:
-      - STATS_CLIENT_URI=http://stats-server:9090
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm-main
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=root
+      - STATS_SERVER_URL=http://stat-service:9090
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
 
   ewm-db:
     image: postgres:14-alpine
-    container_name: postgres-ewm-main-db
+    container_name: ewm-db
     ports:
       - "6542:5432"
+    volumes:
+      - ewm-db:/var/lib/postgresql/data/
     environment:
-      - POSTGRES_DB=ewm-main
+      - POSTGRES_DB=ewm
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
 
+volumes:
   stat-db:
-    image: postgres:14-alpine
-    container_name: postgres-ewm-stat-db
-    ports:
-      - "6541:5432"
-    environment:
-      - POSTGRES_DB=ewm-stat
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=root
+  ewm-db:
