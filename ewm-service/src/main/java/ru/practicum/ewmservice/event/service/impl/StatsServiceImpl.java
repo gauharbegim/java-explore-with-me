@@ -39,28 +39,29 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public void addHit(HttpServletRequest request) {
-        statsClient.saveHit(appName,
-                request.getRequestURI(),
-                request.getRemoteAddr(),
-                LocalDateTime.parse(LocalDateTime.now().format(SystemConstats.DT_FORMATTER), SystemConstats.DT_FORMATTER)
-        );
+        statsClient.saveHit(appName, request.getRequestURI(), request.getRemoteAddr(),
+                LocalDateTime.parse(LocalDateTime.now().format(SystemConstats.DT_FORMATTER), SystemConstats.DT_FORMATTER));
     }
 
     @Override
     public List<ViewStats> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
-        ResponseEntity<Object> response = statsClient.getStat(start, end, uris);
+        log.info("Отправлен запрос на получение статистики к серверу статистики с параметрами " +
+                "start = {}, end = {}, uris = {}, unique = {}", start, end, uris, unique);
+
+        ResponseEntity<Object> response = statsClient.getStat(start, end, uris, unique);
 
         try {
             return Arrays.asList(mapper.readValue(mapper.writeValueAsString(response.getBody()), ViewStats[].class));
-
         } catch (IOException exception) {
             throw new ClassCastException(exception.getMessage());
-
         }
     }
 
     @Override
     public Map<Long, Long> getViews(List<EventEntity> events) {
+        log.info("Отправлен запрос на получение статистики неуникальных посещений в виде Map<eventId, count> " +
+                "для списка событий.");
+
         Map<Long, Long> views = new HashMap<>();
 
         List<EventEntity> publishedEvents = getPublished(events);
@@ -82,9 +83,7 @@ public class StatsServiceImpl implements StatsService {
                     .map(id -> ("/events/" + id))
                     .collect(Collectors.toList());
 
-            //TODO
-            List<ViewStats> stats = getStats(start, end, uris, false);
-
+            List<ViewStats> stats = getStats(start, end, uris, null);
             stats.forEach(stat -> {
                 Long eventId = Long.parseLong(stat.getUri()
                         .split("/", 0)[2]);
