@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.dto.ViewStats;
 import ru.practicum.ewmservice.category.entity.CategoryEntity;
 import ru.practicum.ewmservice.category.service.CategoryService;
 import ru.practicum.ewmservice.event.dto.*;
@@ -255,17 +256,18 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventFullDto getEventByPublic(Long eventId, HttpServletRequest request) {
-        log.info("----> getEventByPublic(Long eventId, HttpServletRequest request)");
-        EventEntity event = getEventById(eventId);
+        EventEntity event = eventRepository.findByIdAndState(eventId, EventState.PUBLISHED);
 
-        if (!event.getState().equals(EventState.PUBLISHED)) {
+        if (event == null) {
             throw new NotFoundException("Событие с таким id не опубликовано.");
         }
 
         statsService.addHit(request);
 
-        return toEventFullDto(event);
+        List<ViewStats> stats = statsService.getStats(event.getPublishedOn(), LocalDateTime.now(), List.of(request.getRequestURI()), true);
+        return EventMapper.toEventFullDto(event, null, stats.get(0).getHits());
     }
 
     @Override
