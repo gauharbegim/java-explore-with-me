@@ -3,6 +3,7 @@ package ru.practicum.httpservice.mapper;
 import lombok.experimental.UtilityClass;
 import ru.practicum.dto.EndpointHit;
 import ru.practicum.httpservice.entity.HitEntity;
+import ru.practicum.dto.HitOutputDto;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -17,5 +18,15 @@ public class HitMapper {
         hit.setTimeStamp(LocalDateTime.parse(dto.getTimestamp(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
         return hit;
+    }
+
+    public static HitOutputDto toOutputDto(HitEntity hit) {
+        return HitOutputDto.builder()
+                .id(hit.getId())
+                .app(hit.getApp())
+                .uri(hit.getUri())
+                .ip(hit.getIp())
+                .timeStamp(hit.getTimeStamp())
+                .build();
     }
 }

@@ -1,5 +1,6 @@
 package ru.practicum.httpclient;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class StatsClient extends BaseClient {
     @Autowired
     public StatsClient(@Value("${stats-client.uri}") String serverUrl, RestTemplateBuilder builder) {
@@ -33,6 +35,18 @@ public class StatsClient extends BaseClient {
                 .timeStamp(timestamp)
                 .build();
         return post(StatConstants.HIT_ENDPOINT, endpointHit);
+    }
+
+    public ResponseEntity<Object> getStat(LocalDateTime start, LocalDateTime end, List<String> uris) {
+        return getStat(start, end, uris, null);
+    }
+
+    public ResponseEntity<Object> getStat(LocalDateTime start, LocalDateTime end) {
+        return getStat(start, end, null, null);
+    }
+
+    public ResponseEntity<Object> getStat(LocalDateTime start, LocalDateTime end, Boolean unique) {
+        return getStat(start, end, null, unique);
     }
 
     public ResponseEntity<Object> getStat(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {

@@ -8,23 +8,28 @@ import ru.practicum.ewmservice.category.entity.CategoryEntity;
 @Component
 public class CategoryMapper {
     public static CategoryDto toCategoryDto(CategoryEntity entity) {
-        return CategoryDto.builder()
+        CategoryDto dto = CategoryDto.builder()
                 .id(entity.getId())
                 .name(entity.getName())
                 .build();
+        return CategoryDto.builder()
+                .id(entity.getId())
+                .name(entity.getName())
+                .build();;
     }
 
     public static CategoryEntity toNewCategoryDto(NewCategoryDto dto) {
-        return CategoryEntity.builder()
+        CategoryEntity entity = CategoryEntity.builder()
                 .name(dto.getName())
                 .build();
+        return entity;
     }
 
     public static CategoryEntity toCategoryEntity(CategoryDto dto) {
-        return CategoryEntity.builder()
+        CategoryEntity entity = CategoryEntity.builder()
                 .id(dto.getId())
                 .name(dto.getName())
                 .build();
-
+        return entity;
     }
 }

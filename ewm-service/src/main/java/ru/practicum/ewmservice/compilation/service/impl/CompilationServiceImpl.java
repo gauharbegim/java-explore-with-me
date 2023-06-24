@@ -1,6 +1,7 @@
 package ru.practicum.ewmservice.compilation.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,7 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class CompilationServiceImpl implements CompilationService {
     private final EventService eventService;
     private final CompilationRepository compilationRepository;
@@ -52,6 +54,8 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     @Transactional
     public CompilationDto edit(Long compId, UpdateCompilationRequest updateCompilationRequest) {
+        log.info("Обновление подборки событий с id {} и новыми параметрами {}", compId, updateCompilationRequest);
+
         CompilationEntity compilation = getCompilationById(compId);
 
         if (updateCompilationRequest.getTitle() != null) {
@@ -85,6 +89,8 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public List<CompilationDto> getAll(Boolean pinned, Pageable pageable) {
+        log.info("Вывод всех подборок событий с параметрами pinned = {}, pageable = {}", pinned, pageable);
+
         List<CompilationEntity> compilations;
 
         if (pinned == null) {

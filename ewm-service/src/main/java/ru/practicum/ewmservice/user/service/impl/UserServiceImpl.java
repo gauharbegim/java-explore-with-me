@@ -1,6 +1,7 @@
 package ru.practicum.ewmservice.user.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
@@ -29,6 +31,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getUsers(List<Long> ids, Pageable pageable) {
+        log.info("Вывод пользователей с id {} и пагинацией {}", ids, pageable);
+
         if (ids == null || ids.isEmpty()) {
             return userRepository.findAll(pageable).stream()
                     .map(UserMapper::toUserDto)
@@ -43,6 +47,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void deleteById(Long id) {
+        log.info("Удаление пользователя с id {}", id);
+
         userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Пользователь с таким id не найден."));
 
@@ -51,6 +57,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserEntity getUserById(Long id) {
+        log.info("Вывод пользователя с id {}", id);
+
         return userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Пользователь с таким id не найден."));
     }
