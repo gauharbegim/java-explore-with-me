@@ -12,7 +12,10 @@ public class CategoryMapper {
                 .id(entity.getId())
                 .name(entity.getName())
                 .build();
-        return dto;
+        return CategoryDto.builder()
+                .id(entity.getId())
+                .name(entity.getName())
+                .build();;
     }
 
     public static CategoryEntity toNewCategoryDto(NewCategoryDto dto) {
