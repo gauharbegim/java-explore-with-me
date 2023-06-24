@@ -37,18 +37,6 @@ public class StatsClient extends BaseClient {
         return post(StatConstants.HIT_ENDPOINT, endpointHit);
     }
 
-    public ResponseEntity<Object> getStat(LocalDateTime start, LocalDateTime end, List<String> uris) {
-        return getStat(start, end, uris, null);
-    }
-
-    public ResponseEntity<Object> getStat(LocalDateTime start, LocalDateTime end) {
-        return getStat(start, end, null, null);
-    }
-
-    public ResponseEntity<Object> getStat(LocalDateTime start, LocalDateTime end, Boolean unique) {
-        return getStat(start, end, null, unique);
-    }
-
     public ResponseEntity<Object> getStat(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
         if (start == null || end == null || start.isAfter(end)) {
             throw new IllegalArgumentException("Недопустимый временной промежуток.");
