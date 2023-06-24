@@ -1,6 +1,5 @@
 package ru.practicum.httpclient;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -16,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-@Slf4j
 public class StatsClient extends BaseClient {
     @Autowired
     public StatsClient(@Value("${stats-client.uri}") String serverUrl, RestTemplateBuilder builder) {
