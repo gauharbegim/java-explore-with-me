@@ -29,12 +29,4 @@ public class UserMapper {
                 .email(dto.getEmail())
                 .build();
     }
-
-    public static UserEntity toUserEntity(UserDto dto) {
-        return UserEntity.builder()
-                .id(dto.getId())
-                .name(dto.getName())
-                .email(dto.getEmail())
-                .build();
-    }
 }

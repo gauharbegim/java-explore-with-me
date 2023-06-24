@@ -1,7 +1,6 @@
 package ru.practicum.ewmservice.event.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewmservice.event.dto.EventRequestStatusUpdateRequest;
@@ -32,7 +31,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-@Slf4j
 public class RequestServiceImpl implements RequestService {
     private final UserService userService;
     private final EventService eventService;
