@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @AllArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class CommentServiceImpl implements CommentService {
 
     private final EventService eventService;
