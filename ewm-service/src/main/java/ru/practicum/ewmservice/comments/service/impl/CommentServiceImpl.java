@@ -104,7 +104,6 @@ public class CommentServiceImpl implements CommentService {
             throw new ForbiddenException("Only comment author can edit comment");
         }
 
-        log.info("Updating comment with body={}", updateCommentRequest.toString());
         if (updateCommentRequest.getCommentText() != null && !updateCommentRequest.getCommentText().isBlank()) {
             comment.setCommentText(updateCommentRequest.getCommentText());
         }
@@ -165,26 +164,21 @@ public class CommentServiceImpl implements CommentService {
         Pageable pageable = PageRequest.of(from / size, size);
         eventService.getEventById(eventId);
 
-        log.info("Getting all comments by event with id={}", eventId);
         List<CommentEntity> comments = commentRepository.findAllByEventId(eventId, pageable);
         List<CommentDto> commentDtos = CommentMapper.toCommentDto(comments);
 
-        // Getting all comments ids
         List<Long> commentIds = commentDtos.stream()
                 .map(CommentDto::getId)
                 .collect(Collectors.toList());
 
-        // Getting all likes for comment
         Map<Long, List<LikeEntity>> commentLikesMap = likesRepository.findAllByCommentIdIn(commentIds)
                 .stream()
                 .collect(Collectors.groupingBy(LikeEntity::getCommentId));
 
-        // Getting all dislikes for comment
         Map<Long, List<DislikeEntity>> commentDislikesMap = dislikeRepository.findAllByCommentIdIn(commentIds)
                 .stream()
                 .collect(Collectors.groupingBy(DislikeEntity::getCommentId));
 
-        // Setting likes and dislikes count to comments
         for (CommentDto commentDto : commentDtos) {
             Long commentId = commentDto.getId();
 
