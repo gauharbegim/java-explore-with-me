@@ -1,7 +1,11 @@
 package ru.practicum.ewmservice.event.service;
 
 import org.springframework.data.domain.Pageable;
-import ru.practicum.ewmservice.event.dto.*;
+import ru.practicum.ewmservice.event.dto.EventFullDto;
+import ru.practicum.ewmservice.event.dto.EventShortDto;
+import ru.practicum.ewmservice.event.dto.NewEventDto;
+import ru.practicum.ewmservice.event.dto.UpdateEventAdminRequest;
+import ru.practicum.ewmservice.event.dto.UpdateEventUserRequest;
 import ru.practicum.ewmservice.event.entity.EventEntity;
 import ru.practicum.ewmservice.event.enums.EventSortType;
 import ru.practicum.ewmservice.event.enums.EventState;

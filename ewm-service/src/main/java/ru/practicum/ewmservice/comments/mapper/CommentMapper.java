@@ -29,9 +29,7 @@ public class CommentMapper {
     public static List<CommentDto> toCommentDto(Iterable<CommentEntity> comments) {
         List<CommentDto> result = new ArrayList<>();
 
-        for (CommentEntity comment : comments) {
-            result.add(toCommentDto(comment));
-        }
+        comments.forEach(comment -> result.add(toCommentDto(comment)));
 
         return result;
     }
